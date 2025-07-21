@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a professional law firm website for Sharon K. Lowry, an estate planning and probate attorney based in Denton, TX. The website is built as a static frontend application using modern web technologies to provide information about legal services, attorney background, and client contact options.
+This is a professional law firm website for Sharon K. Lowry, an estate planning and probate attorney based in Denton, TX. The website is built as a static frontend application using modern web technologies to provide information about legal services, attorney background, and client contact options. The site now features authentic professional photography of Sharon and the historic Denton County Courthouse to establish credibility and local connection.
 
 ## User Preferences
 

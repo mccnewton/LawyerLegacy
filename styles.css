@@ -791,6 +791,46 @@ body {
     }
 }
 
+/* Location Section Styling */
+.location-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.highlight-item {
+    background: white;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    margin-bottom: 0.75rem;
+}
+
+.highlight-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.15);
+}
+
+.location-image img {
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.location-image img:hover {
+    transform: scale(1.02);
+}
+
+/* Mobile responsiveness for location section */
+@media (max-width: 768px) {
+    .location-content {
+        text-align: center;
+    }
+    
+    .highlight-item {
+        justify-content: center;
+        text-align: center;
+    }
+}
+
 /* Mobile responsiveness for chatbot */
 @media (max-width: 768px) {
     .consultation-assistant .row {
