@@ -29,15 +29,23 @@ Preferred communication style: Simple, everyday language.
 1. **index.html**: Homepage with hero section and service overview
 2. **about.html**: Attorney biography and credentials
 3. **blog.html**: Legal insights and educational content
-4. **contact.html**: Contact information and consultation request
+4. **contact.html**: Contact information, Google Maps integration, and interactive consultation chatbot
 5. **styles.css**: Global styling with purple branding theme
-6. **script.js**: Interactive functionality and animations
+6. **script.js**: Interactive functionality, animations, and chatbot logic
 
 ### Navigation System
 - Fixed-top navigation bar with responsive collapse for mobile
 - Active page highlighting based on current URL
 - Smooth scrolling for anchor links
 - Scroll-based styling changes for enhanced UX
+
+### Interactive Features
+- **Consultation Chatbot**: Interactive assistant on contact page that collects client information through conversational interface
+- **Client Data Collection**: Gathers name, email, phone, service type, timeline, and case details
+- **Smart Validation**: Real-time input validation for email and phone formats
+- **Quick Options**: Pre-defined response buttons for common selections
+- **Email Integration**: Generates consultation summary emails to Sharon's inbox
+- **Professional Animations**: Typing indicators, message animations, and smooth transitions
 
 ### Design System
 - **Color Palette**: Purple-based theme (primary: #6c5ce7) for legal professionalism
