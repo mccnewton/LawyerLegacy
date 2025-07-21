@@ -1,13 +1,13 @@
 :root {
-    --purple-primary: #6c5ce7;
-    --purple-secondary: #a29bfe;
-    --purple-light: #f3f2ff;
-    --purple-dark: #5f3dc4;
+    --purple-primary: #663399;
+    --purple-secondary: #8866bb;
+    --purple-light: #f0ebf5;
+    --purple-dark: #4d2673;
     --text-dark: #2d3436;
     --text-muted: #636e72;
     --white: #ffffff;
     --light-gray: #f8f9fa;
-    --shadow: rgba(108, 92, 231, 0.1);
+    --shadow: rgba(102, 51, 153, 0.1);
 }
 
 * {
@@ -807,7 +807,7 @@ body {
 
 .highlight-item:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.15);
+    box-shadow: 0 4px 15px rgba(102, 51, 153, 0.15);
 }
 
 .location-image img {
