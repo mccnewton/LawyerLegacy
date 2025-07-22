@@ -152,6 +152,17 @@ body {
     padding: 80px 0;
 }
 
+.service-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.service-card-link:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
 .service-card {
     background: white;
     padding: 2.5rem 2rem;
@@ -160,11 +171,38 @@ body {
     text-align: center;
     transition: all 0.3s ease;
     border: 1px solid #f8f9fa;
+    cursor: pointer;
+    position: relative;
 }
 
 .service-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 15px 35px rgba(108, 92, 231, 0.15);
+    box-shadow: 0 15px 35px rgba(102, 51, 153, 0.2);
+}
+
+.service-learn-more {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+    color: var(--purple-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.service-card:hover .service-learn-more {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.service-learn-more i {
+    transition: transform 0.3s ease;
+}
+
+.service-card:hover .service-learn-more i {
+    transform: translateX(5px);
 }
 
 .service-icon {
@@ -828,6 +866,143 @@ body {
     .highlight-item {
         justify-content: center;
         text-align: center;
+    }
+}
+
+/* Services Page Styling */
+.services-hero {
+    background: linear-gradient(135deg, var(--purple-primary) 0%, var(--purple-dark) 100%);
+    padding: 120px 0 80px 0;
+    position: relative;
+}
+
+.services-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100"><path fill="rgba(255,255,255,0.1)" d="M0,0v46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1000,6.84,1000,0V0H0Z"/></svg>');
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 0.3;
+}
+
+.service-detail-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    padding: 3rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.service-detail-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--purple-primary) 0%, var(--purple-dark) 100%);
+}
+
+.service-detail-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 35px rgba(102, 51, 153, 0.15);
+}
+
+.service-icon-large {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, var(--purple-primary) 0%, var(--purple-dark) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    box-shadow: 0 8px 25px rgba(102, 51, 153, 0.3);
+}
+
+.service-icon-large i {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.service-features {
+    list-style: none;
+    padding: 0;
+}
+
+.service-features li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.service-features li:last-child {
+    border-bottom: none;
+}
+
+.service-benefits {
+    list-style: none;
+    padding: 0;
+}
+
+.service-benefits li {
+    padding: 0.3rem 0;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.service-benefits li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--purple-primary);
+    font-weight: bold;
+}
+
+.cta-box {
+    border: 3px solid var(--purple-light);
+    background: linear-gradient(135deg, #ffffff 0%, var(--purple-light) 100%);
+}
+
+.cta-box h3 {
+    position: relative;
+}
+
+.cta-box h3::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: var(--purple-primary);
+    border-radius: 2px;
+}
+
+/* Mobile responsiveness for services page */
+@media (max-width: 768px) {
+    .service-detail-card {
+        padding: 2rem 1.5rem;
+    }
+    
+    .service-icon-large {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 1rem;
+    }
+    
+    .service-icon-large i {
+        font-size: 2rem;
+    }
+    
+    .services-hero {
+        padding: 100px 0 60px 0;
     }
 }
 
