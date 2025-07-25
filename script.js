@@ -993,6 +993,8 @@ function toggleBlogPost(postId) {
 
 // Simple Floating Chatbot
 function initFloatingChatbot() {
+    console.log('Initializing floating chatbot...');
+    
     const chatBubble = document.getElementById('chatBubble');
     const chatWindow = document.getElementById('chatWindow');
     const chatClose = document.getElementById('chatClose');
@@ -1000,7 +1002,23 @@ function initFloatingChatbot() {
     const chatSend = document.getElementById('chatSend');
     const chatMessages = document.getElementById('chatMessages');
     
-    if (!chatBubble || !chatWindow) return;
+    console.log('Chat elements found:', {
+        bubble: !!chatBubble,
+        window: !!chatWindow,
+        close: !!chatClose,
+        input: !!chatInput,
+        send: !!chatSend,
+        messages: !!chatMessages
+    });
+    
+    if (!chatBubble || !chatWindow) {
+        console.error('Required chatbot elements not found');
+        return;
+    }
+    
+    // Make sure the bubble is visible
+    console.log('Making chat bubble visible...');
+    chatBubble.style.display = 'flex';
     
     let isOpen = false;
     let currentStep = 0;
@@ -1113,6 +1131,14 @@ function openChatbot() {
         chatBubble.click();
     }
 }
+
+// Initialize floating chatbot when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize floating chatbot
+    initFloatingChatbot();
+    
+    // Other initialization code can go here
+});
 
 // Floating chatbot helper functions
 function addFloatingMessage(text, sender, isQuickOptions = false) {
