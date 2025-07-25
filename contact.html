@@ -306,17 +306,17 @@
                                 <div class="text-center">
                                     <small class="text-muted d-block mb-2">Or login with:</small>
                                     <div class="oauth-buttons">
+                                        <button type="button" class="btn btn-outline-danger btn-sm me-1" onclick="googleLogin()" title="Login with Google">
+                                            <i class="fab fa-google"></i> Google
+                                        </button>
                                         <a href="/auth/replit" class="btn btn-outline-warning btn-sm me-1" title="Login with Replit">
-                                            <i class="fas fa-code"></i>
-                                        </a>
-                                        <a href="/auth/google" class="btn btn-outline-danger btn-sm me-1" title="Login with Google">
-                                            <i class="fab fa-google"></i>
+                                            <i class="fas fa-code"></i> Replit
                                         </a>
                                         <a href="/auth/facebook" class="btn btn-outline-primary btn-sm me-1" title="Login with Facebook">
-                                            <i class="fab fa-facebook-f"></i>
+                                            <i class="fab fa-facebook-f"></i> Facebook
                                         </a>
                                         <a href="/auth/github" class="btn btn-outline-dark btn-sm" title="Login with GitHub">
-                                            <i class="fab fa-github"></i>
+                                            <i class="fab fa-github"></i> GitHub
                                         </a>
                                     </div>
                                 </div>
@@ -435,6 +435,27 @@
         }
 
 
+
+        // Google Sign-In
+        function googleLogin() {
+            const messageDiv = document.getElementById('admin-login-message');
+            
+            // Check if user email is authorized before attempting OAuth
+            const userEmail = prompt('Please enter your email address to verify authorization:');
+            if (!userEmail) return;
+            
+            const authorizedEmails = ['creageco@gmail.com', 'mccnewton@gmail.com'];
+            if (!authorizedEmails.includes(userEmail.toLowerCase())) {
+                messageDiv.textContent = 'Email not authorized for admin access';
+                messageDiv.style.display = 'block';
+                messageDiv.className = 'mt-2 text-center small text-danger';
+                return;
+            }
+            
+            // Store email for verification and redirect to Google OAuth
+            sessionStorage.setItem('pendingAuthEmail', userEmail);
+            window.location.href = '/auth/google';
+        }
 
         // Admin login function
         async function adminLogin() {
