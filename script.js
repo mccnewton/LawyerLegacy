@@ -47,17 +47,7 @@ function toggleFaq(element) {
 
 document.addEventListener('DOMContentLoaded', function() {
     
-    // Prevent hash-based scrolling on contact page unless coming from services
-    if (window.location.pathname.includes('contact.html') && window.location.hash) {
-        const referrer = document.referrer;
-        if (!referrer.includes('services.html')) {
-            // Prevent default hash behavior
-            history.replaceState(null, null, window.location.pathname);
-            // Override any existing scroll position
-            window.history.scrollRestoration = 'manual';
-            window.scrollTo(0, 0);
-        }
-    }
+
     
     // Initialize all functionality
     initNavigation();
@@ -113,22 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
-        // Force contact page to stay at top when accessed directly via menu
-        if (window.location.pathname.includes('contact.html')) {
-            const referrer = document.referrer;
-            // If not coming from services page, force scroll to top and remove hash
-            if (!referrer.includes('services.html')) {
-                // Remove any hash from URL immediately
-                if (window.location.hash) {
-                    history.replaceState(null, null, window.location.pathname);
-                }
-                // Force scroll to top multiple times to override browser behavior
-                window.scrollTo(0, 0);
-                setTimeout(() => window.scrollTo(0, 0), 100);
-                setTimeout(() => window.scrollTo(0, 0), 500);
-                setTimeout(() => window.scrollTo(0, 0), 1000);
-            }
-        }
+
     }
     
     // Animation functionality

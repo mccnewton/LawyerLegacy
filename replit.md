@@ -18,6 +18,7 @@ Preferred communication style: Simple, everyday language.
 - Cleaned up all consultation-related CSS and JavaScript code
 - Simplified site architecture by removing all complex chatbot functionality
 - Contact page now focuses on direct communication methods (phone, email, contact form)
+- Removed forced scroll-to-top behavior that was added for chatbot functionality
 
 ### Design and Functionality Improvements (July 25, 2025)
 - Fixed text contrast issues in contact page call-to-action section with proper dark purple text
