@@ -10,6 +10,7 @@ const FacebookStrategy = require('passport-facebook').Strategy;
 const GitHubStrategy = require('passport-github2').Strategy;
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
+const { Issuer, Strategy } = require('openid-client');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -240,6 +241,79 @@ passport.use(new GitHubStrategy({
     }
 }));
 
+// Replit Auth Strategy - Custom implementation
+if (process.env.REPLIT_CLIENT_ID) {
+    try {
+        const { Issuer } = require('openid-client');
+        
+        // Setup Replit Auth asynchronously
+        Issuer.discover('https://replit.com/.well-known/openid_configuration')
+            .then(replitIssuer => {
+                const client = new replitIssuer.Client({
+                    client_id: process.env.REPLIT_CLIENT_ID,
+                    client_secret: process.env.REPLIT_CLIENT_SECRET,
+                    redirect_uris: [process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}/auth/replit/callback` : 'http://localhost:5000/auth/replit/callback'],
+                    response_types: ['code'],
+                });
+
+                passport.use('replit', new Strategy({
+                    client,
+                    params: {
+                        scope: 'openid profile email'
+                    }
+                }, async (tokenset, userinfo, done) => {
+                    try {
+                        const email = userinfo.email;
+                        
+                        // Check if user is authorized
+                        const authorizedEmails = ['creageco@gmail.com', 'mccnewton@gmail.com'];
+                        if (!authorizedEmails.includes(email)) {
+                            return done(null, false, { message: 'Unauthorized email address' });
+                        }
+                        
+                        // Check if user already exists
+                        let result = await pool.query('SELECT * FROM users WHERE oauth_id = $1 AND oauth_provider = $2', [userinfo.sub, 'replit']);
+                        let user = result.rows[0];
+                        
+                        if (!user) {
+                            // Check by email
+                            result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+                            user = result.rows[0];
+                            
+                            if (!user) {
+                                // Create new user
+                                result = await pool.query(
+                                    'INSERT INTO users (username, email, oauth_provider, oauth_id, display_name, role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+                                    [email, email, 'replit', userinfo.sub, userinfo.name || userinfo.preferred_username, 'admin']
+                                );
+                                user = result.rows[0];
+                            } else {
+                                // Update existing user with Replit OAuth info
+                                await pool.query(
+                                    'UPDATE users SET oauth_provider = $1, oauth_id = $2, display_name = $3 WHERE id = $4',
+                                    ['replit', userinfo.sub, userinfo.name || userinfo.preferred_username, user.id]
+                                );
+                            }
+                        }
+                        
+                        return done(null, user);
+                    } catch (error) {
+                        return done(error);
+                    }
+                }));
+
+                console.log('Replit Auth configured successfully');
+            })
+            .catch(error => {
+                console.error('Failed to setup Replit Auth:', error);
+            });
+    } catch (error) {
+        console.log('Replit Auth not available in this environment');
+    }
+} else {
+    console.log('Replit Auth client ID not provided, using simplified auth');
+}
+
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
@@ -378,6 +452,30 @@ app.get('/auth/github/callback',
         res.redirect('/admin');
     }
 );
+
+// Replit Auth Routes
+app.get('/auth/replit', (req, res) => {
+    if (passport._strategies.replit) {
+        passport.authenticate('replit')(req, res);
+    } else {
+        res.redirect('/contact?error=replit_auth_not_configured');
+    }
+});
+
+app.get('/auth/replit/callback', (req, res) => {
+    if (passport._strategies.replit) {
+        passport.authenticate('replit', { failureRedirect: '/contact?error=oauth_failed' })(req, res, () => {
+            req.session.user = {
+                id: req.user.id,
+                username: req.user.username,
+                role: req.user.role
+            };
+            res.redirect('/admin');
+        });
+    } else {
+        res.redirect('/contact?error=replit_auth_not_configured');
+    }
+});
 
 app.post('/api/logout', (req, res) => {
     req.session.destroy();
