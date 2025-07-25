@@ -912,6 +912,7 @@ body {
     background: linear-gradient(135deg, var(--purple-primary) 0%, var(--purple-dark) 100%);
     padding: 120px 0 80px 0;
     position: relative;
+    overflow: hidden;
 }
 
 .services-hero::before {
@@ -1207,7 +1208,8 @@ body {
     }
     
     .hero-section,
-    .page-header {
+    .page-header,
+    .services-hero {
         background: none !important;
         color: black !important;
     }
