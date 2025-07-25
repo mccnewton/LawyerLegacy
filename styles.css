@@ -383,6 +383,43 @@ body {
     padding: 1rem;
 }
 
+/* Call to Action Box */
+.cta-box {
+    background: var(--purple-primary) !important;
+    border-radius: 15px !important;
+    box-shadow: 0 10px 30px rgba(75, 0, 130, 0.2) !important;
+}
+
+.cta-box h3,
+.cta-box p {
+    color: white !important;
+}
+
+.cta-box .btn-light {
+    background: white !important;
+    color: var(--purple-primary) !important;
+    border: 2px solid white !important;
+    font-weight: 600 !important;
+}
+
+.cta-box .btn-light:hover {
+    background: var(--purple-light) !important;
+    color: var(--purple-dark) !important;
+    transform: translateY(-2px);
+}
+
+.cta-box .btn-outline-light {
+    border: 2px solid white !important;
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+.cta-box .btn-outline-light:hover {
+    background: white !important;
+    color: var(--purple-primary) !important;
+    transform: translateY(-2px);
+}
+
 
 
 
@@ -758,26 +795,7 @@ body {
     font-weight: bold;
 }
 
-.cta-box {
-    border: 3px solid var(--purple-light);
-    background: linear-gradient(135deg, #ffffff 0%, var(--purple-light) 100%);
-}
 
-.cta-box h3 {
-    position: relative;
-}
-
-.cta-box h3::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 3px;
-    background: var(--purple-primary);
-    border-radius: 2px;
-}
 
 /* Mobile responsiveness for services page */
 @media (max-width: 768px) {
@@ -803,10 +821,7 @@ body {
     color: var(--purple-primary) !important;
 }
 
-.cta-box {
-    border-radius: 15px;
-    box-shadow: 0 15px 35px rgba(75, 0, 130, 0.3);
-}
+
 
 .services-reminder {
     border-radius: 15px;
