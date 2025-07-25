@@ -99,9 +99,9 @@
                 </div>
             </div>
 
-            <!-- Filters -->
+            <!-- Filters and Bulk Actions -->
             <div class="row mb-4">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-outline-primary active" data-filter="all">All</button>
                         <button type="button" class="btn btn-outline-primary" data-filter="unread">Unread</button>
@@ -109,10 +109,29 @@
                         <button type="button" class="btn btn-outline-primary" data-filter="archived">Archived</button>
                     </div>
                 </div>
-                <div class="col-md-6 text-end">
-                    <button id="refreshBtn" class="btn btn-primary">
-                        <i class="fas fa-sync-alt me-1"></i>Refresh
-                    </button>
+                <div class="col-md-4">
+                    <!-- Bulk Actions -->
+                    <div id="bulkActions" class="d-none">
+                        <div class="input-group">
+                            <select id="bulkStatusSelect" class="form-select">
+                                <option value="">Bulk Action</option>
+                                <option value="read">Mark as Read</option>
+                                <option value="archived">Mark as Archived</option>
+                                <option value="unread">Mark as Unread</option>
+                            </select>
+                            <button class="btn btn-success" onclick="applyBulkAction()">Apply</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="btn-group">
+                        <button id="selectAllBtn" class="btn btn-outline-secondary" onclick="toggleSelectAll()">
+                            <i class="fas fa-check-square me-1"></i>Select All
+                        </button>
+                        <button id="refreshBtn" class="btn btn-primary">
+                            <i class="fas fa-sync-alt me-1"></i>Refresh
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -152,8 +171,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" id="saveNotesBtn" class="btn btn-primary">Save Changes</button>
-                    <button type="button" id="deleteConsultationBtn" class="btn btn-danger">Delete</button>
+                    <button type="button" id="saveNotesBtn" class="btn btn-primary">Update Status</button>
                 </div>
             </div>
         </div>
@@ -234,10 +252,13 @@
 
             container.innerHTML = consultations.map(consultation => `
                 <div class="col-12 mb-3">
-                    <div class="card consultation-card status-${consultation.status}" onclick="openConsultationModal(${consultation.id})">
+                    <div class="card consultation-card status-${consultation.status}">
                         <div class="card-body">
                             <div class="row align-items-center">
-                                <div class="col-md-8">
+                                <div class="col-md-1">
+                                    <input type="checkbox" class="form-check-input consultation-checkbox" value="${consultation.id}" onchange="updateBulkActions()">
+                                </div>
+                                <div class="col-md-7" onclick="openConsultationModal(${consultation.id})" style="cursor: pointer;">
                                     <h5 class="card-title mb-1">
                                         ${consultation.name}
                                         <span class="badge bg-${getStatusColor(consultation.status)} ms-2">${consultation.status}</span>
@@ -253,7 +274,15 @@
                                         ${consultation.message ? consultation.message.substring(0, 150) + '...' : 'No details provided'}
                                     </p>
                                 </div>
-                                <div class="col-md-4 text-end">
+                                <div class="col-md-2">
+                                    <select class="form-select form-select-sm quick-status-update" data-id="${consultation.id}" onchange="quickStatusUpdate(this)">
+                                        <option value="">Quick Update</option>
+                                        <option value="unread" ${consultation.status === 'unread' ? 'selected' : ''}>Unread</option>
+                                        <option value="read" ${consultation.status === 'read' ? 'selected' : ''}>Read</option>
+                                        <option value="archived" ${consultation.status === 'archived' ? 'selected' : ''}>Archived</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 text-end">
                                     <small class="text-muted">
                                         ${new Date(consultation.created_at).toLocaleDateString()}
                                     </small>
@@ -334,12 +363,121 @@
 
         document.getElementById('refreshBtn').addEventListener('click', loadConsultations);
 
+        // Quick status update function
+        async function quickStatusUpdate(selectElement) {
+            const consultationId = selectElement.dataset.id;
+            const newStatus = selectElement.value;
+            
+            if (!newStatus) return;
+            
+            try {
+                const response = await fetch(`/api/consultation-requests/${consultationId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                if (response.ok) {
+                    await loadConsultations();
+                    showNotification(`Status updated to ${newStatus}`, 'success');
+                } else {
+                    showNotification('Failed to update status', 'error');
+                    selectElement.value = ''; // Reset select
+                }
+            } catch (error) {
+                console.error('Quick update error:', error);
+                showNotification('Error updating status', 'error');
+                selectElement.value = '';
+            }
+        }
+
+        // Bulk actions functionality
+        function updateBulkActions() {
+            const checkboxes = document.querySelectorAll('.consultation-checkbox:checked');
+            const bulkActions = document.getElementById('bulkActions');
+            
+            if (checkboxes.length > 0) {
+                bulkActions.classList.remove('d-none');
+            } else {
+                bulkActions.classList.add('d-none');
+            }
+        }
+
+        function toggleSelectAll() {
+            const checkboxes = document.querySelectorAll('.consultation-checkbox');
+            const selectAllBtn = document.getElementById('selectAllBtn');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            
+            checkboxes.forEach(cb => {
+                cb.checked = !allChecked;
+            });
+            
+            selectAllBtn.innerHTML = allChecked ? 
+                '<i class="fas fa-check-square me-1"></i>Select All' : 
+                '<i class="fas fa-square me-1"></i>Deselect All';
+            
+            updateBulkActions();
+        }
+
+        async function applyBulkAction() {
+            const checkboxes = document.querySelectorAll('.consultation-checkbox:checked');
+            const bulkStatus = document.getElementById('bulkStatusSelect').value;
+            
+            if (!bulkStatus || checkboxes.length === 0) {
+                showNotification('Please select items and an action', 'error');
+                return;
+            }
+            
+            const consultationIds = Array.from(checkboxes).map(cb => cb.value);
+            
+            try {
+                const updatePromises = consultationIds.map(id => 
+                    fetch(`/api/consultation-requests/${id}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: bulkStatus })
+                    })
+                );
+                
+                await Promise.all(updatePromises);
+                await loadConsultations();
+                showNotification(`${consultationIds.length} items updated to ${bulkStatus}`, 'success');
+                
+                // Reset bulk actions
+                document.getElementById('bulkStatusSelect').value = '';
+                document.getElementById('bulkActions').classList.add('d-none');
+                document.getElementById('selectAllBtn').innerHTML = '<i class="fas fa-check-square me-1"></i>Select All';
+                
+            } catch (error) {
+                console.error('Bulk update error:', error);
+                showNotification('Error updating items', 'error');
+            }
+        }
+
+        // Notification system
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
         document.getElementById('saveNotesBtn').addEventListener('click', async function() {
             if (!selectedConsultation) return;
 
             try {
                 const status = document.getElementById('statusSelect').value;
-                const adminNotes = document.getElementById('adminNotes').value;
 
                 const response = await fetch(`/api/consultation-requests/${selectedConsultation.id}`, {
                     method: 'PATCH',
@@ -348,11 +486,20 @@
                 });
 
                 if (response.ok) {
+                    // Update the local data
+                    selectedConsultation.status = status;
+                    // Close modal automatically
                     bootstrap.Modal.getInstance(document.getElementById('consultationModal')).hide();
-                    loadConsultations();
+                    // Reload consultations to reflect changes
+                    await loadConsultations();
+                    // Show success message
+                    showNotification('Status updated successfully!', 'success');
+                } else {
+                    showNotification('Failed to update status', 'error');
                 }
             } catch (error) {
                 console.error('Save error:', error);
+                showNotification('Error updating status', 'error');
             }
         });
 
