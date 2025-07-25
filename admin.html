@@ -217,7 +217,15 @@
                 
                 currentConsultations = consultations;
                 updateStatistics(consultations);
-                renderConsultations(consultations);
+                
+                // Apply current filter
+                let filtered;
+                if (currentFilter === 'all') {
+                    filtered = consultations;
+                } else {
+                    filtered = consultations.filter(c => c.status === currentFilter);
+                }
+                renderConsultations(filtered);
                 
                 document.getElementById('loadingSpinner').style.display = 'none';
             } catch (error) {
@@ -227,10 +235,12 @@
         }
 
         function updateStatistics(consultations) {
-            const total = consultations.length;
-            const unread = consultations.filter(c => c.status === 'unread').length;
-            const read = consultations.filter(c => c.status === 'read').length;
-            const archived = consultations.filter(c => c.status === 'archived').length;
+            // Always use all consultations for statistics, not just filtered ones
+            const allConsultations = currentConsultations || consultations;
+            const total = allConsultations.length;
+            const unread = allConsultations.filter(c => c.status === 'unread').length;
+            const read = allConsultations.filter(c => c.status === 'read').length;
+            const archived = allConsultations.filter(c => c.status === 'archived').length;
 
             document.getElementById('totalConsultations').textContent = total;
             document.getElementById('unreadConsultations').textContent = unread;
@@ -520,20 +530,39 @@
             }
         });
 
-        // Filter buttons
-        document.querySelectorAll('[data-filter]').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                
-                currentFilter = this.dataset.filter;
-                const filtered = currentFilter === 'all' 
-                    ? currentConsultations 
-                    : currentConsultations.filter(c => c.status === currentFilter);
-                
-                renderConsultations(filtered);
+        // Filter buttons - Initialize after DOM content is loaded
+        function initializeFilters() {
+            document.querySelectorAll('[data-filter]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all filter buttons
+                    document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Update current filter
+                    currentFilter = this.dataset.filter;
+                    
+                    // Filter consultations based on selection
+                    let filtered;
+                    if (currentFilter === 'all') {
+                        filtered = currentConsultations;
+                    } else {
+                        filtered = currentConsultations.filter(c => c.status === currentFilter);
+                    }
+                    
+                    // Render filtered consultations
+                    renderConsultations(filtered);
+                    updateStatistics(filtered);
+                    
+                    // Clear any selections when filtering
+                    document.querySelectorAll('.consultation-checkbox').forEach(cb => cb.checked = false);
+                    updateBulkActions();
+                });
             });
-        });
+        }
+        
+        // Call initialize filters after DOM is ready
+        initializeFilters();
     </script>
 </body>
 </html>
