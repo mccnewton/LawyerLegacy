@@ -1,6 +1,18 @@
 // Main JavaScript file for Sharon K. Lowry Law website
 document.addEventListener('DOMContentLoaded', function() {
     
+    // Prevent hash-based scrolling on contact page unless coming from services
+    if (window.location.pathname.includes('contact.html') && window.location.hash) {
+        const referrer = document.referrer;
+        if (!referrer.includes('services.html')) {
+            // Prevent default hash behavior
+            history.replaceState(null, null, window.location.pathname);
+            // Override any existing scroll position
+            window.history.scrollRestoration = 'manual';
+            window.scrollTo(0, 0);
+        }
+    }
+    
     // Initialize all functionality
     initNavigation();
     initAnimations();
@@ -47,15 +59,20 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
-        // Prevent automatic scrolling to hash fragments when accessing contact page directly
-        // Only scroll if the URL contains a hash AND the user came from the services page
-        if (window.location.hash && window.location.pathname.includes('contact.html')) {
+        // Force contact page to stay at top when accessed directly via menu
+        if (window.location.pathname.includes('contact.html')) {
             const referrer = document.referrer;
-            // Only auto-scroll if coming from services page with a hash link
+            // If not coming from services page, force scroll to top and remove hash
             if (!referrer.includes('services.html')) {
-                // Remove hash from URL without triggering scroll
-                history.replaceState(null, null, window.location.pathname);
+                // Remove any hash from URL immediately
+                if (window.location.hash) {
+                    history.replaceState(null, null, window.location.pathname);
+                }
+                // Force scroll to top multiple times to override browser behavior
                 window.scrollTo(0, 0);
+                setTimeout(() => window.scrollTo(0, 0), 100);
+                setTimeout(() => window.scrollTo(0, 0), 500);
+                setTimeout(() => window.scrollTo(0, 0), 1000);
             }
         }
     }
@@ -418,6 +435,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Only initialize if chatbot elements exist (on contact page)
         if (!chatInput || !sendBtn || !chatMessages) {
             return;
+        }
+
+        // Additional check: prevent scroll to chatbot if not coming from services
+        const referrer = document.referrer;
+        if (!referrer.includes('services.html')) {
+            // Force page to stay at top
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
         }
 
         // Bot conversation state
