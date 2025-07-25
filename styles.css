@@ -1272,3 +1272,18 @@ body {
     padding: 1.5rem;
     border-radius: 8px;
 }
+
+/* Fix button alignment issues */
+.btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    white-space: nowrap !important;
+}
+
+.btn i {
+    display: inline-block !important;
+    line-height: 1 !important;
+}
