@@ -448,6 +448,25 @@ body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
+.highlight-item {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100px;
+    min-height: 100px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center;
+    border: 1px solid rgba(108, 92, 231, 0.1);
+}
+
+.highlight-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
 .info-item i {
     font-size: 1.3rem;
     margin-top: 0.1rem;
