@@ -19,6 +19,15 @@ Preferred communication style: Simple, everyday language.
 - Simplified site architecture by removing all complex chatbot functionality
 - Contact page now focuses on direct communication methods (phone, email, contact form)
 
+### Design and Functionality Improvements (July 25, 2025)
+- Fixed text contrast issues in contact page call-to-action section with proper dark purple text
+- Made "Send Email" and "Call" buttons consistent with matching purple styling
+- Converted contact page service items into clickable buttons linking to services page sections
+- Fixed blog page JavaScript functionality (toggleBlogPost, toggleFaq, showSection functions)
+- Improved location highlights section with uniform 100px height boxes and centered content
+- Enhanced visual consistency across all pages with proper button styling and spacing
+- Corrected grammatical voice consistency throughout site (third person references to Sharon)
+
 ## System Architecture
 
 ### Frontend Architecture
