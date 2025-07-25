@@ -43,20 +43,7 @@ function toggleFaq(element) {
     }
 }
 
-function toggleBlogPost(postId) {
-    const content = document.getElementById(postId);
-    const icon = document.querySelector(`[onclick="toggleBlogPost('${postId}')"] .blog-toggle-icon`);
-    
-    if (content && icon) {
-        if (content.style.display === 'none' || content.style.display === '') {
-            content.style.display = 'block';
-            icon.classList.add('rotated');
-        } else {
-            content.style.display = 'none';
-            icon.classList.remove('rotated');
-        }
-    }
-}
+// Blog post toggle function removed - posts now display in full
 
 document.addEventListener('DOMContentLoaded', function() {
     
