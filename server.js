@@ -144,14 +144,15 @@ passport.use(new GoogleStrategy({
                 );
                 user = result.rows[0];
             } else {
-                // Update existing user with OAuth info
+                // Update existing user with OAuth info and ensure admin role
                 await pool.query(
-                    'UPDATE users SET oauth_provider = $1, oauth_id = $2, display_name = $3 WHERE id = $4',
-                    ['google', profile.id, profile.displayName, user.id]
+                    'UPDATE users SET oauth_provider = $1, oauth_id = $2, display_name = $3, role = $4 WHERE id = $5',
+                    ['google', profile.id, profile.displayName, 'admin', user.id]
                 );
                 user.oauth_provider = 'google';
                 user.oauth_id = profile.id;
                 user.display_name = profile.displayName;
+                user.role = 'admin';
             }
         }
         
@@ -194,12 +195,13 @@ passport.use(new FacebookStrategy({
                 user = result.rows[0];
             } else {
                 await pool.query(
-                    'UPDATE users SET oauth_provider = $1, oauth_id = $2, display_name = $3 WHERE id = $4',
-                    ['facebook', profile.id, `${profile.name.givenName} ${profile.name.familyName}`, user.id]
+                    'UPDATE users SET oauth_provider = $1, oauth_id = $2, display_name = $3, role = $4 WHERE id = $5',
+                    ['facebook', profile.id, `${profile.name.givenName} ${profile.name.familyName}`, 'admin', user.id]
                 );
                 user.oauth_provider = 'facebook';
                 user.oauth_id = profile.id;
                 user.display_name = `${profile.name.givenName} ${profile.name.familyName}`;
+                user.role = 'admin';
             }
         }
         
@@ -245,12 +247,13 @@ passport.use(new GitHubStrategy({
                 user = result.rows[0];
             } else {
                 await pool.query(
-                    'UPDATE users SET oauth_provider = $1, oauth_id = $2, display_name = $3 WHERE id = $4',
-                    ['github', profile.id, profile.displayName || profile.username, user.id]
+                    'UPDATE users SET oauth_provider = $1, oauth_id = $2, display_name = $3, role = $4 WHERE id = $5',
+                    ['github', profile.id, profile.displayName || profile.username, 'admin', user.id]
                 );
                 user.oauth_provider = 'github';
                 user.oauth_id = profile.id;
                 user.display_name = profile.displayName || profile.username;
+                user.role = 'admin';
             }
         }
         
@@ -292,14 +295,15 @@ function setupReplitAuth() {
                     );
                     user = result.rows[0];
                 } else {
-                    // Update existing user with Replit OAuth info
+                    // Update existing user with Replit OAuth info and ensure admin role
                     await pool.query(
-                        'UPDATE users SET oauth_provider = $1, oauth_id = $2, display_name = $3 WHERE id = $4',
-                        ['replit', `replit_${email}`, email.split('@')[0], user.id]
+                        'UPDATE users SET oauth_provider = $1, oauth_id = $2, display_name = $3, role = $4 WHERE id = $5',
+                        ['replit', `replit_${email}`, email.split('@')[0], 'admin', user.id]
                     );
                     user.oauth_provider = 'replit';
                     user.oauth_id = `replit_${email}`;
                     user.display_name = email.split('@')[0];
+                    user.role = 'admin';
                 }
             }
             
