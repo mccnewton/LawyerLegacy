@@ -385,38 +385,43 @@ body {
 
 /* Call to Action Box */
 .cta-box {
-    background: var(--purple-primary) !important;
+    background: var(--purple-light) !important;
+    border: 2px solid var(--purple-primary) !important;
     border-radius: 15px !important;
     box-shadow: 0 10px 30px rgba(75, 0, 130, 0.2) !important;
 }
 
 .cta-box h3,
 .cta-box p {
-    color: white !important;
+    color: var(--purple-dark) !important;
+    font-weight: 600 !important;
 }
 
 .cta-box .btn-light {
-    background: white !important;
-    color: var(--purple-primary) !important;
-    border: 2px solid white !important;
+    background: var(--purple-primary) !important;
+    color: white !important;
+    border: 2px solid var(--purple-primary) !important;
     font-weight: 600 !important;
 }
 
 .cta-box .btn-light:hover {
-    background: var(--purple-light) !important;
-    color: var(--purple-dark) !important;
+    background: var(--purple-dark) !important;
+    color: white !important;
+    border-color: var(--purple-dark) !important;
     transform: translateY(-2px);
 }
 
 .cta-box .btn-outline-light {
-    border: 2px solid white !important;
-    color: white !important;
+    border: 2px solid var(--purple-primary) !important;
+    color: var(--purple-primary) !important;
+    background: transparent !important;
     font-weight: 600 !important;
 }
 
 .cta-box .btn-outline-light:hover {
-    background: white !important;
-    color: var(--purple-primary) !important;
+    background: var(--purple-primary) !important;
+    color: white !important;
+    border-color: var(--purple-primary) !important;
     transform: translateY(-2px);
 }
 
