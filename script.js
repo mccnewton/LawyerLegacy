@@ -453,17 +453,61 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('For technical support, contact the web development team');
 });
 
-// Blog post toggle functionality
-function toggleBlogPost(postId) {
-    const content = document.getElementById(postId + '-content');
-    const icon = document.getElementById(postId + '-icon');
+// Blog and FAQ functionality for blog page
+function showSection(sectionName) {
+    // Hide all sections
+    const blogSection = document.getElementById('blog-section');
+    const faqSection = document.getElementById('faq-section');
     
-    if (content.style.display === 'none' || content.style.display === '') {
-        content.style.display = 'block';
-        icon.classList.add('rotated');
+    if (blogSection) blogSection.style.display = 'none';
+    if (faqSection) faqSection.style.display = 'none';
+    
+    // Show selected section
+    const targetSection = document.getElementById(sectionName + '-section');
+    if (targetSection) {
+        targetSection.style.display = 'block';
+    }
+    
+    // Update tab buttons
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    tabButtons.forEach(btn => btn.classList.remove('active'));
+    
+    const activeButton = document.querySelector(`[onclick="showSection('${sectionName}')"]`);
+    if (activeButton) {
+        activeButton.classList.add('active');
+    }
+}
+
+function toggleFaq(element) {
+    const faqItem = element.parentElement;
+    const answer = faqItem.querySelector('.faq-answer');
+    const icon = element.querySelector('i');
+    
+    if (answer.style.display === 'none' || answer.style.display === '') {
+        answer.style.display = 'block';
+        icon.classList.remove('fa-chevron-right');
+        icon.classList.add('fa-chevron-down');
+        faqItem.classList.add('active');
     } else {
-        content.style.display = 'none';
-        icon.classList.remove('rotated');
+        answer.style.display = 'none';
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-right');
+        faqItem.classList.remove('active');
+    }
+}
+
+function toggleBlogPost(postId) {
+    const content = document.getElementById(postId);
+    const icon = document.querySelector(`[onclick="toggleBlogPost('${postId}')"] .blog-toggle-icon`);
+    
+    if (content && icon) {
+        if (content.style.display === 'none' || content.style.display === '') {
+            content.style.display = 'block';
+            icon.classList.add('rotated');
+        } else {
+            content.style.display = 'none';
+            icon.classList.remove('rotated');
+        }
     }
 }
 
@@ -519,21 +563,7 @@ function showAdminMessage(message, type) {
     }
 }
 
-// Global function for blog post toggle
-function toggleBlogPost(postId) {
-    const content = document.getElementById(postId);
-    const icon = document.querySelector(`[onclick="toggleBlogPost('${postId}')"] .blog-toggle-icon`);
-    
-    if (content && icon) {
-        if (content.style.display === 'none' || content.style.display === '') {
-            content.style.display = 'block';
-            icon.classList.add('rotated');
-        } else {
-            content.style.display = 'none';
-            icon.classList.remove('rotated');
-        }
-    }
-}
+
 
 
 
@@ -545,6 +575,8 @@ if (typeof module !== 'undefined' && module.exports) {
         formatPhoneNumber,
         isValidEmail,
         toggleBlogPost,
+        toggleFaq,
+        showSection,
         adminLogin
     };
 }
