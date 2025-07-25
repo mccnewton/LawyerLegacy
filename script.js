@@ -1,4 +1,21 @@
 // Main JavaScript file for Sharon K. Lowry Law website
+
+// Global consultation bot variables
+let currentStep = 'name';
+let userData = {};
+let conversationState = {
+    step: 0,
+    data: {
+        name: '',
+        email: '',
+        phone: '',
+        serviceType: '',
+        timeline: '',
+        details: '',
+        urgency: ''
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     
     // Prevent hash-based scrolling on contact page unless coming from services
@@ -454,8 +471,8 @@ document.addEventListener('DOMContentLoaded', function() {
             document.documentElement.scrollTop = 0;
         }
 
-        // Bot conversation state
-        let conversationState = {
+        // Reset conversation state for contact page
+        conversationState = {
             step: 0,
             data: {
                 name: '',
@@ -610,41 +627,8 @@ document.addEventListener('DOMContentLoaded', function() {
             addMessage(input, 'user');
             chatInput.value = '';
 
-            // Validate input
-            const currentQuestion = botQuestions[conversationState.step];
-            if (currentQuestion && currentQuestion.validation && !currentQuestion.validation(input)) {
-                setTimeout(() => {
-                    addMessage(currentQuestion.errorMessage, 'bot');
-                }, 500);
-                return;
-            }
-
-            // Store user data
-            if (currentQuestion && currentQuestion.field) {
-                conversationState.data[currentQuestion.field] = input;
-                
-                // Format phone number
-                if (currentQuestion.field === 'phone') {
-                    conversationState.data.phone = formatPhoneNumber(input);
-                }
-            }
-
-            conversationState.step++;
-
-            // Show typing indicator
-            showTypingIndicator();
-
-            setTimeout(() => {
-                hideTypingIndicator();
-                
-                if (conversationState.step < botQuestions.length) {
-                    // Ask next question
-                    askNextQuestion();
-                } else {
-                    // Conversation complete
-                    completeConsultation();
-                }
-            }, 1500);
+            // Use shared consultation logic
+            processSharedConsultationResponse(input, false);
         }
 
         function askNextQuestion() {
@@ -1026,17 +1010,14 @@ function initFloatingChatbot() {
         chatbotWindow.classList.add('show');
         chatbotBubble.style.display = 'none';
         
-        // Initialize conversation if not started
-        if (!localStorage.getItem('consultation_started')) {
-            setTimeout(() => initConsultationBot(), 100);
-        }
+        // Initialize floating chatbot conversation
+        initFloatingConsultationBot();
     });
     
     // Handle close button
     chatbotClose.addEventListener('click', function() {
         chatbotWindow.classList.remove('show');
         setTimeout(() => {
-            chatbotWindow.style.display = 'none';
             chatbotBubble.style.display = 'block';
         }, 300);
     });
@@ -1051,6 +1032,47 @@ function initFloatingChatbot() {
     });
 }
 
+// Initialize floating consultation bot
+function initFloatingConsultationBot() {
+    const chatInput = document.querySelector('#chatbot-window #chat-input');
+    const sendBtn = document.querySelector('#chatbot-window #send-btn');
+    const chatMessages = document.querySelector('#chatbot-window #chat-messages');
+    const summarySection = document.querySelector('#chatbot-window #consultation-summary');
+    const summaryContent = document.querySelector('#chatbot-window #summary-content');
+    
+    if (!chatInput || !sendBtn || !chatMessages) {
+        return; // Required elements not found
+    }
+    
+    // Clear any existing content
+    chatMessages.innerHTML = '';
+    
+    // Add initial bot message
+    addFloatingMessage("Hello! I'm here to help you prepare for your consultation with Sharon K. Lowry. May I start by getting your name?", 'bot');
+    
+    // Enable input
+    chatInput.disabled = false;
+    sendBtn.disabled = false;
+    
+    // Reset conversation state for floating chatbot
+    conversationState = {
+        step: 0,
+        data: {
+            name: '',
+            email: '',
+            phone: '',
+            serviceType: '',
+            timeline: '',
+            details: '',
+            urgency: ''
+        }
+    };
+    
+    // Add event listeners
+    chatInput.addEventListener('keypress', handleFloatingEnter);
+    sendBtn.addEventListener('click', handleFloatingResponse);
+}
+
 // Function to open chatbot from external links (like Start Planning buttons)
 function openChatbot() {
     const chatbotBubble = document.getElementById('chatbot-bubble');
@@ -1059,6 +1081,238 @@ function openChatbot() {
     
     if (chatbotTrigger && chatbotBubble && chatbotWindow) {
         chatbotTrigger.click();
+    }
+}
+
+// Floating chatbot helper functions
+function addFloatingMessage(text, sender, isQuickOptions = false) {
+    const chatMessages = document.querySelector('#chatbot-window #chat-messages');
+    if (!chatMessages) return;
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}-message`;
+    
+    if (isQuickOptions) {
+        messageDiv.innerHTML = `
+            <div class="message-content">
+                <p>${text}</p>
+                <div class="quick-options">${arguments[3]}</div>
+            </div>
+        `;
+    } else {
+        messageDiv.innerHTML = `
+            <div class="message-content">
+                <p>${text}</p>
+            </div>
+        `;
+    }
+    
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function handleFloatingEnter(e) {
+    if (e.key === 'Enter') {
+        handleFloatingResponse();
+    }
+}
+
+function handleFloatingResponse() {
+    const chatInput = document.querySelector('#chatbot-window #chat-input');
+    const userInput = chatInput.value.trim();
+    
+    if (userInput) {
+        addFloatingMessage(userInput, 'user');
+        chatInput.value = '';
+        
+        // Process the response using shared consultation logic
+        processSharedConsultationResponse(userInput, true);
+    }
+}
+
+// Shared consultation processing function that works for both contact page and floating chatbot
+function processSharedConsultationResponse(input, isFloating = false) {
+    // Conversation flow questions (shared between contact page and floating chatbot)
+    const botQuestions = [
+        {
+            question: "Hello! I'm here to help you prepare for your consultation with Sharon K. Lowry. May I start by getting your name?",
+            field: 'name',
+            validation: (input) => input.trim().length > 0,
+            errorMessage: "Please enter your name to continue."
+        },
+        {
+            question: "Nice to meet you, {name}! What's the best email address to reach you at?",
+            field: 'email',
+            validation: (input) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input),
+            errorMessage: "Please enter a valid email address."
+        },
+        {
+            question: "Great! And what's your phone number? (This helps Sharon prepare for your call)",
+            field: 'phone',
+            validation: (input) => input.replace(/\D/g, '').length >= 10,
+            errorMessage: "Please enter a valid phone number with at least 10 digits."
+        },
+        {
+            question: "Perfect! Now, which legal service are you most interested in?",
+            field: 'serviceType',
+            options: [
+                'Will & Estate Planning',
+                'Probate Administration',
+                'Applications for Heirship',
+                'Powers of Attorney',
+                'Guardianship Applications',
+                'Small Estate Affidavits'
+            ]
+        },
+        {
+            question: "Excellent choice! When would you like to schedule your consultation?",
+            field: 'timeline',
+            options: [
+                'This week',
+                'Next week',
+                'Within 2 weeks',
+                'This month',
+                'I\'m flexible'
+            ]
+        },
+        {
+            question: "Finally, please share any important details about your situation that would help Sharon prepare for your consultation:",
+            field: 'details',
+            validation: (input) => input.trim().length > 0,
+            errorMessage: "Please provide some details about your situation."
+        }
+    ];
+
+    // Validate input
+    const currentQuestion = botQuestions[conversationState.step];
+    if (currentQuestion && currentQuestion.validation && !currentQuestion.validation(input)) {
+        setTimeout(() => {
+            if (isFloating) {
+                addFloatingMessage(currentQuestion.errorMessage, 'bot');
+            } else {
+                addMessage(currentQuestion.errorMessage, 'bot');
+            }
+        }, 500);
+        return;
+    }
+
+    // Store user data
+    if (currentQuestion && currentQuestion.field) {
+        conversationState.data[currentQuestion.field] = input;
+        
+        // Format phone number
+        if (currentQuestion.field === 'phone') {
+            conversationState.data.phone = formatPhoneNumber(input);
+        }
+    }
+
+    conversationState.step++;
+
+    // Show typing indicator and continue conversation
+    setTimeout(() => {
+        if (conversationState.step < botQuestions.length) {
+            // Ask next question
+            const question = botQuestions[conversationState.step];
+            let questionText = question.question;
+            
+            // Replace placeholders with user data
+            Object.keys(conversationState.data).forEach(key => {
+                questionText = questionText.replace(`{${key}}`, conversationState.data[key]);
+            });
+            
+            if (isFloating) {
+                addFloatingMessage(questionText, 'bot');
+                
+                // Add quick options if available
+                if (question.options) {
+                    setTimeout(() => {
+                        addFloatingQuickOptions(question.options);
+                    }, 300);
+                }
+            } else {
+                addMessage(questionText, 'bot');
+                
+                // Add quick options if available
+                if (question.options) {
+                    setTimeout(() => {
+                        addQuickOptions(question.options);
+                    }, 300);
+                }
+            }
+        } else {
+            // Conversation complete
+            completeSharedConsultation(isFloating);
+        }
+    }, 1500);
+}
+
+// Generate email body for consultation summary
+function generateEmailBody() {
+    return `New Consultation Request
+
+Name: ${conversationState.data.name}
+Email: ${conversationState.data.email}
+Phone: ${conversationState.data.phone}
+Service Interest: ${conversationState.data.serviceType}
+Timeline: ${conversationState.data.timeline}
+Details: ${conversationState.data.details}
+
+This consultation request was submitted through the website consultation assistant.
+
+Best regards,
+Website Consultation Assistant`;
+}
+
+function addFloatingQuickOptions(options) {
+    const chatMessages = document.querySelector('#chatbot-window #chat-messages');
+    if (!chatMessages) return;
+    
+    const optionsDiv = document.createElement('div');
+    optionsDiv.className = 'quick-options';
+    
+    options.forEach(option => {
+        const optionBtn = document.createElement('button');
+        optionBtn.className = 'quick-option';
+        optionBtn.textContent = option;
+        optionBtn.type = 'button';
+        optionBtn.addEventListener('click', () => {
+            processSharedConsultationResponse(option, true);
+        });
+        optionsDiv.appendChild(optionBtn);
+    });
+
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message bot-message';
+    messageDiv.appendChild(optionsDiv);
+    
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function completeSharedConsultation(isFloating = false) {
+    const completionMessage = `Thank you, ${conversationState.data.name}! I've gathered all the information Sharon needs to prepare for your consultation.`;
+    
+    if (isFloating) {
+        addFloatingMessage(completionMessage, 'bot');
+        
+        setTimeout(() => {
+            const finalMessage = `Sharon will review this information before your consultation. You can call (940) 765-4992 directly to schedule your meeting.`;
+            addFloatingMessage(finalMessage, 'bot');
+            
+            // Generate email summary
+            const emailSubject = `Consultation Request - ${conversationState.data.name}`;
+            const emailBody = generateEmailBody();
+            const mailtoLink = `mailto:sklowry@sklowrylaw.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+            
+            setTimeout(() => {
+                if (confirm('Would you like to send this consultation summary via email?')) {
+                    window.location.href = mailtoLink;
+                }
+            }, 1000);
+        }, 800);
+    } else {
+        // Use existing contact page completion logic
+        completeConsultation();
     }
 }
 
