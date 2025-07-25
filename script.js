@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initAnimations();
     initScrollEffects();
     initAccessibility();
+    initFloatingChatbot();
     initConsultationBot();
     
     // Navigation functionality
@@ -1003,6 +1004,61 @@ function toggleBlogPost(postId) {
             content.style.display = 'none';
             icon.classList.remove('rotated');
         }
+    }
+}
+
+// Floating Chatbot functionality
+function initFloatingChatbot() {
+    const chatbotBubble = document.getElementById('chatbot-bubble');
+    const chatbotWindow = document.getElementById('chatbot-window');
+    const chatbotTrigger = document.getElementById('chatbot-trigger');
+    const chatbotClose = document.getElementById('chatbot-close');
+    
+    if (!chatbotBubble || !chatbotWindow || !chatbotTrigger || !chatbotClose) {
+        return; // Elements not found
+    }
+    
+    // Show the bubble on all pages
+    chatbotBubble.classList.add('show');
+    
+    // Handle bubble click to open chatbot
+    chatbotTrigger.addEventListener('click', function() {
+        chatbotWindow.classList.add('show');
+        chatbotBubble.style.display = 'none';
+        
+        // Initialize conversation if not started
+        if (!localStorage.getItem('consultation_started')) {
+            setTimeout(() => initConsultationBot(), 100);
+        }
+    });
+    
+    // Handle close button
+    chatbotClose.addEventListener('click', function() {
+        chatbotWindow.classList.remove('show');
+        setTimeout(() => {
+            chatbotWindow.style.display = 'none';
+            chatbotBubble.style.display = 'block';
+        }, 300);
+    });
+    
+    // Close chatbot when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!chatbotWindow.contains(e.target) && !chatbotTrigger.contains(e.target)) {
+            if (chatbotWindow.classList.contains('show')) {
+                chatbotClose.click();
+            }
+        }
+    });
+}
+
+// Function to open chatbot from external links (like Start Planning buttons)
+function openChatbot() {
+    const chatbotBubble = document.getElementById('chatbot-bubble');
+    const chatbotWindow = document.getElementById('chatbot-window');
+    const chatbotTrigger = document.getElementById('chatbot-trigger');
+    
+    if (chatbotTrigger && chatbotBubble && chatbotWindow) {
+        chatbotTrigger.click();
     }
 }
 

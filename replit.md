@@ -10,11 +10,14 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-### Navigation Fix (July 25, 2025)
-- Fixed Contact menu navigation to go to top of Contact page instead of auto-scrolling to chatbot
-- Removed auto-focus on chatbot input when accessing Contact page directly through menu
-- Start Planning buttons on Services page still correctly link to chatbot section
-- Added toggleBlogPost function to fix JavaScript errors on Blog page
+### Floating Chatbot Implementation (July 25, 2025)
+- Created floating chatbot bubble that appears on all pages in bottom-right corner
+- Removed large consultation assistant section from Contact page
+- Updated all "Start Planning" buttons on Services page to open floating chatbot
+- Contact menu now correctly goes to top of Contact page
+- Floating chatbot can be opened/closed with X button and clicking outside
+- Maintained all existing chatbot functionality in compact floating window
+- Added consultation info section on Contact page with button to open chatbot
 
 ## System Architecture
 
