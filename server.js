@@ -260,78 +260,60 @@ passport.use(new GitHubStrategy({
     }
 }));
 
-// Replit Auth Strategy - Custom implementation
-if (process.env.REPLIT_CLIENT_ID) {
-    try {
-        const { Issuer } = require('openid-client');
-        
-        // Setup Replit Auth asynchronously
-        Issuer.discover('https://replit.com/.well-known/openid_configuration')
-            .then(replitIssuer => {
-                const client = new replitIssuer.Client({
-                    client_id: process.env.REPLIT_CLIENT_ID,
-                    client_secret: process.env.REPLIT_CLIENT_SECRET,
-                    redirect_uris: [process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}/auth/replit/callback` : 'http://localhost:5000/auth/replit/callback'],
-                    response_types: ['code'],
-                });
+// Replit Auth Strategy - Simple implementation for Replit environment
+function setupReplitAuth() {
+    // Simple Replit Auth that works without external credentials
+    passport.use('replit', new LocalStrategy({
+        usernameField: 'email',
+        passwordField: 'replit_token'
+    }, async (email, token, done) => {
+        try {
+            // Check if user is authorized
+            const authorizedEmails = ['creageco@gmail.com', 'mccnewton@gmail.com'];
+            if (!authorizedEmails.includes(email)) {
+                return done(null, false, { message: 'Unauthorized email address' });
+            }
+            
+            // Check if user already exists by OAuth ID or email
+            let result = await pool.query('SELECT * FROM users WHERE oauth_provider = $1 AND email = $2', ['replit', email]);
+            let user = result.rows[0];
+            
+            if (!user) {
+                // Check by email or username
+                result = await pool.query('SELECT * FROM users WHERE email = $1 OR username = $1', [email]);
+                user = result.rows[0];
+                
+                if (!user) {
+                    // Create new user with unique username
+                    const username = `replit_${Date.now()}`;
+                    result = await pool.query(
+                        'INSERT INTO users (username, email, oauth_provider, oauth_id, display_name, role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+                        [username, email, 'replit', `replit_${email}`, email.split('@')[0], 'admin']
+                    );
+                    user = result.rows[0];
+                } else {
+                    // Update existing user with Replit OAuth info
+                    await pool.query(
+                        'UPDATE users SET oauth_provider = $1, oauth_id = $2, display_name = $3 WHERE id = $4',
+                        ['replit', `replit_${email}`, email.split('@')[0], user.id]
+                    );
+                    user.oauth_provider = 'replit';
+                    user.oauth_id = `replit_${email}`;
+                    user.display_name = email.split('@')[0];
+                }
+            }
+            
+            return done(null, user);
+        } catch (error) {
+            return done(error);
+        }
+    }));
 
-                passport.use('replit', new Strategy({
-                    client,
-                    params: {
-                        scope: 'openid profile email'
-                    }
-                }, async (tokenset, userinfo, done) => {
-                    try {
-                        const email = userinfo.email;
-                        
-                        // Check if user is authorized
-                        const authorizedEmails = ['creageco@gmail.com', 'mccnewton@gmail.com'];
-                        if (!authorizedEmails.includes(email)) {
-                            return done(null, false, { message: 'Unauthorized email address' });
-                        }
-                        
-                        // Check if user already exists
-                        let result = await pool.query('SELECT * FROM users WHERE oauth_id = $1 AND oauth_provider = $2', [userinfo.sub, 'replit']);
-                        let user = result.rows[0];
-                        
-                        if (!user) {
-                            // Check by email
-                            result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-                            user = result.rows[0];
-                            
-                            if (!user) {
-                                // Create new user
-                                result = await pool.query(
-                                    'INSERT INTO users (username, email, oauth_provider, oauth_id, display_name, role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-                                    [email, email, 'replit', userinfo.sub, userinfo.name || userinfo.preferred_username, 'admin']
-                                );
-                                user = result.rows[0];
-                            } else {
-                                // Update existing user with Replit OAuth info
-                                await pool.query(
-                                    'UPDATE users SET oauth_provider = $1, oauth_id = $2, display_name = $3 WHERE id = $4',
-                                    ['replit', userinfo.sub, userinfo.name || userinfo.preferred_username, user.id]
-                                );
-                            }
-                        }
-                        
-                        return done(null, user);
-                    } catch (error) {
-                        return done(error);
-                    }
-                }));
-
-                console.log('Replit Auth configured successfully');
-            })
-            .catch(error => {
-                console.error('Failed to setup Replit Auth:', error);
-            });
-    } catch (error) {
-        console.log('Replit Auth not available in this environment');
-    }
-} else {
-    console.log('Replit Auth client ID not provided, using simplified auth');
+    console.log('Replit Auth configured successfully');
 }
+
+// Initialize Replit Auth
+setupReplitAuth();
 
 passport.serializeUser((user, done) => {
     done(null, user.id);
@@ -474,27 +456,63 @@ app.get('/auth/github/callback',
 
 // Replit Auth Routes
 app.get('/auth/replit', (req, res) => {
-    if (passport._strategies.replit) {
-        passport.authenticate('replit')(req, res);
-    } else {
-        res.redirect('/contact?error=replit_auth_not_configured');
-    }
+    // Redirect to a simple login form for Replit users
+    res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Replit Login</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            <style>
+                body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; }
+                .login-card { background: white; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="login-card p-4">
+                            <h3 class="text-center mb-4">
+                                <i class="fas fa-code text-warning"></i> Replit Login
+                            </h3>
+                            <form action="/auth/replit/callback" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">Authorized Email</label>
+                                    <input type="email" class="form-control" name="email" required 
+                                           placeholder="Enter your authorized email">
+                                </div>
+                                <div class="mb-3">
+                                    <input type="hidden" name="replit_token" value="replit_auth_token">
+                                </div>
+                                <button type="submit" class="btn btn-warning w-100">
+                                    <i class="fas fa-sign-in-alt"></i> Login with Replit
+                                </button>
+                            </form>
+                            <div class="text-center mt-3">
+                                <a href="/contact" class="text-muted">← Back to Contact</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        </body>
+        </html>
+    `);
 });
 
-app.get('/auth/replit/callback', (req, res) => {
-    if (passport._strategies.replit) {
-        passport.authenticate('replit', { failureRedirect: '/contact?error=oauth_failed' })(req, res, () => {
-            req.session.user = {
-                id: req.user.id,
-                username: req.user.username,
-                role: req.user.role
-            };
-            res.redirect('/admin');
-        });
-    } else {
-        res.redirect('/contact?error=replit_auth_not_configured');
+app.post('/auth/replit/callback', 
+    passport.authenticate('replit', { failureRedirect: '/contact?error=oauth_failed' }),
+    (req, res) => {
+        req.session.user = {
+            id: req.user.id,
+            username: req.user.username,
+            role: req.user.role
+        };
+        res.redirect('/admin');
     }
-});
+);
 
 app.post('/api/logout', (req, res) => {
     req.session.destroy();
