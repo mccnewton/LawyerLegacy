@@ -710,7 +710,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             return `Dear Sharon,
 
-I would like to schedule a free consultation regarding ${serviceType.toLowerCase()}.
+I would like to schedule a consultation regarding ${serviceType.toLowerCase()}.
 
 Contact Information:
 - Name: ${name}
