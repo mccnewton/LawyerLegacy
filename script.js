@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Smooth scroll for anchor links
+        // Smooth scroll for anchor links only when clicked, not on page load
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -46,6 +46,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+        
+        // Prevent automatic scrolling to hash fragments when accessing contact page directly
+        // Only scroll if the URL contains a hash AND the user came from the services page
+        if (window.location.hash && window.location.pathname.includes('contact.html')) {
+            const referrer = document.referrer;
+            // Only auto-scroll if coming from services page with a hash link
+            if (!referrer.includes('services.html')) {
+                // Remove hash from URL without triggering scroll
+                history.replaceState(null, null, window.location.pathname);
+                window.scrollTo(0, 0);
+            }
+        }
     }
     
     // Animation functionality
@@ -935,6 +947,22 @@ function showAdminMessage(message, type) {
         setTimeout(() => {
             messageDiv.style.display = 'none';
         }, 5000);
+    }
+}
+
+// Global function for blog post toggle
+function toggleBlogPost(postId) {
+    const content = document.getElementById(postId);
+    const icon = document.querySelector(`[onclick="toggleBlogPost('${postId}')"] .blog-toggle-icon`);
+    
+    if (content && icon) {
+        if (content.style.display === 'none' || content.style.display === '') {
+            content.style.display = 'block';
+            icon.classList.add('rotated');
+        } else {
+            content.style.display = 'none';
+            icon.classList.remove('rotated');
+        }
     }
 }
 
