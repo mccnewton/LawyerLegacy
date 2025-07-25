@@ -16,11 +16,11 @@
             margin-bottom: 2rem;
         }
         .content-header {
-            background: linear-gradient(135deg, #4B0082 0%, #2E003E 100%);
+            background: linear-gradient(135deg, var(--purple-primary) 0%, var(--purple-dark) 100%);
             color: white;
             padding: 1.5rem;
             border-radius: 15px 15px 0 0;
-            border-bottom: 3px solid #6A0DAD;
+            border-bottom: 3px solid var(--purple-secondary);
         }
         .scrollable-content {
             height: 600px;
@@ -35,11 +35,11 @@
             border-radius: 4px;
         }
         .scrollable-content::-webkit-scrollbar-thumb {
-            background: #4B0082;
+            background: var(--purple-primary);
             border-radius: 4px;
         }
         .scrollable-content::-webkit-scrollbar-thumb:hover {
-            background: #2E003E;
+            background: var(--purple-dark);
         }
         .faq-item {
             border-bottom: 1px solid #eee;
@@ -49,7 +49,7 @@
             border-bottom: none;
         }
         .faq-question {
-            color: #4B0082;
+            color: var(--purple-primary);
             font-weight: 600;
             font-size: 1.1rem;
             margin-bottom: 1rem;
@@ -59,7 +59,7 @@
             transition: color 0.3s ease;
         }
         .faq-question:hover {
-            color: #2E003E;
+            color: var(--purple-dark);
         }
         .faq-question i {
             margin-right: 0.5rem;
@@ -85,8 +85,8 @@
         }
         .tab-btn {
             background: transparent;
-            border: 2px solid #4B0082;
-            color: #4B0082;
+            border: 2px solid var(--purple-primary);
+            color: var(--purple-primary);
             padding: 0.75rem 2rem;
             margin: 0 0.5rem;
             border-radius: 50px;
@@ -95,7 +95,7 @@
         }
         .tab-btn.active,
         .tab-btn:hover {
-            background: #4B0082;
+            background: var(--purple-primary);
             color: white;
         }
         @media (max-width: 768px) {
