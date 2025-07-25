@@ -3,11 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estate Planning Blog - Sharon K. Lowry Law | Denton, TX</title>
-    <meta name="description" content="Estate planning insights and tips from Sharon K. Lowry. Learn about wills, probate, powers of attorney, and protecting your family's future.">
+    <title>Estate Planning Blog & FAQ - Sharon K. Lowry Law | Denton, TX</title>
+    <meta name="description" content="Estate planning insights, tips, and frequently asked questions from Sharon K. Lowry. Learn about wills, probate, powers of attorney, and protecting your family's future.">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
+    <style>
+        .content-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .content-header {
+            background: linear-gradient(135deg, #6c5ce7 0%, #5a4fcf 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px 15px 0 0;
+            border-bottom: 3px solid #a29bfe;
+        }
+        .scrollable-content {
+            height: 600px;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+        .scrollable-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .scrollable-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        .scrollable-content::-webkit-scrollbar-thumb {
+            background: #6c5ce7;
+            border-radius: 4px;
+        }
+        .scrollable-content::-webkit-scrollbar-thumb:hover {
+            background: #5a4fcf;
+        }
+        .faq-item {
+            border-bottom: 1px solid #eee;
+            padding: 1.5rem 0;
+        }
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+        .faq-question {
+            color: #6c5ce7;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s ease;
+        }
+        .faq-question:hover {
+            color: #5a4fcf;
+        }
+        .faq-question i {
+            margin-right: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+        .faq-answer {
+            line-height: 1.7;
+            color: #555;
+        }
+        .blog-post {
+            border-bottom: 2px solid #f8f9fa;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        .blog-post:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .section-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        .tab-btn {
+            background: transparent;
+            border: 2px solid #6c5ce7;
+            color: #6c5ce7;
+            padding: 0.75rem 2rem;
+            margin: 0 0.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active,
+        .tab-btn:hover {
+            background: #6c5ce7;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .scrollable-content {
+                height: 400px;
+            }
+            .section-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            .tab-btn {
+                margin: 0.25rem 0;
+                width: 200px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
@@ -32,7 +136,7 @@
                         <a class="nav-link" href="services.html">Legal Services</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="blog.html">Blog</a>
+                        <a class="nav-link active" href="blog.html">Blog & FAQ</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="contact.html">Contact</a>
@@ -47,247 +151,301 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center text-white">
-                    <h1 class="display-4 fw-bold mb-3 fade-in">Estate Planning Blog</h1>
+                    <h1 class="display-4 fw-bold mb-3 fade-in">Blog & FAQ</h1>
                     <p class="lead fade-in delay-1">
-                        Insights and guidance on protecting your family's future
+                        Insights, guidance, and answers to your estate planning questions
                     </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Blog Content -->
-    <section class="blog-content py-5">
+    <!-- Section Navigation -->
+    <section class="py-4">
+        <div class="container">
+            <div class="section-tabs">
+                <button class="tab-btn active" onclick="showSection('blog')">
+                    <i class="fas fa-blog me-2"></i>Blog Posts
+                </button>
+                <button class="tab-btn" onclick="showSection('faq')">
+                    <i class="fas fa-question-circle me-2"></i>FAQ
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-5">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8">
-                    <!-- Blog Post 1 -->
-                    <article class="blog-post mb-5 hover-lift">
-                        <div class="blog-post-header mb-4">
-                            <h2 class="h3 text-primary mb-2">
-                                <a href="#" class="text-decoration-none">
-                                    Does Your Executor Know Your Email Password?
-                                </a>
+                <!-- Blog Section -->
+                <div class="col-lg-6 mb-4" id="blog-section">
+                    <div class="content-section">
+                        <div class="content-header">
+                            <h2 class="h3 mb-0">
+                                <i class="fas fa-blog me-2"></i>
+                                Legal Insights & Updates
                             </h2>
-                            <div class="blog-meta text-muted mb-3">
-                                <i class="fas fa-calendar me-2"></i>March 26, 2015
-                                <i class="fas fa-comments ms-3 me-2"></i>18 Comments
-                            </div>
                         </div>
-                        <div class="blog-post-content">
-                            <p class="lead mb-4">
-                                You've made your will and named a friend as executor, or you've executed a Durable Power of Attorney for Financial Matters and appointed an agent to handle your affairs while you are still living but disabled. But does your agent or executor know everything he or she needs to know to manage your affairs, or administer your estate, successfully?
-                            </p>
-                            
-                            <p class="mb-4">Here are a few of the things your agent or executor will need to know:</p>
-                            
-                            <ul class="mb-4">
-                                <li>Your personal information - name, address, phone, drivers license number, social security number, date of birth</li>
-                                <li>Information about your current spouse, any former spouses, and children</li>
-                                <li>Military service record</li>
-                                <li>Primary care physician</li>
-                                <li>Any insurance policies - health, life, accident, disability, home, auto. Policy numbers, name of company, beneficiary designations, agent to contact</li>
-                                <li>Bank accounts</li>
-                                <li>Retirement accounts</li>
-                                <li>Electronic information -- passwords to computer and smartphone; email addresses and passwords; any social media accounts - name and password; password to your home wireless network</li>
-                                <li>Alarm codes to your property</li>
-                                <li>Persons to notify of your death, with contact information</li>
-                                <li>Professional advisors -- lawyer, financial planner, accountant</li>
-                                <li>Vehicle VIN numbers</li>
-                                <li>Sources and destinations of automatic deposits/withdrawals from bank account</li>
-                                <li>Credit and debit card numbers</li>
-                            </ul>
-                            
-                            <div class="alert alert-primary">
-                                <strong>This is not a complete list. Call me to prepare your estate planning documents to make sure your agent and executor have all the information they need to carry out your wishes.</strong>
-                            </div>
-                        </div>
-                    </article>
+                        <div class="scrollable-content">
+                            <!-- Blog Post 1 -->
+                            <article class="blog-post">
+                                <div class="blog-post-header mb-4">
+                                    <h3 class="h4 text-primary mb-2">
+                                        Does Your Executor Know Your Email Password?
+                                    </h3>
+                                    <div class="blog-meta text-muted mb-3">
+                                        <i class="fas fa-calendar me-2"></i>March 26, 2015
+                                        <i class="fas fa-user ms-3 me-2"></i>Sharon K. Lowry
+                                    </div>
+                                </div>
+                                <div class="blog-post-content">
+                                    <p class="lead mb-4">
+                                        You've made your will and named a friend as executor, or you've executed a Durable Power of Attorney for Financial Matters and appointed an agent to handle your affairs while you are still living but disabled. But does your agent or executor know everything he or she needs to know to manage your affairs, or administer your estate, successfully?
+                                    </p>
+                                    
+                                    <p class="mb-4">Here are a few of the things your agent or executor will need to know:</p>
+                                    
+                                    <ul class="mb-4">
+                                        <li>Your personal information - name, address, phone, drivers license number, social security number, date of birth</li>
+                                        <li>Information about your current spouse, any former spouses, and children</li>
+                                        <li>Military service record</li>
+                                        <li>Primary care physician</li>
+                                        <li>Any insurance policies - health, life, accident, disability, home, auto. Policy numbers, name of company, beneficiary designations, agent to contact</li>
+                                        <li>Bank accounts</li>
+                                        <li>Retirement accounts</li>
+                                        <li>Electronic information -- passwords to computer and smartphone; email addresses and passwords; any social media accounts - name and password; password to your home wireless network</li>
+                                        <li>Alarm codes to your property</li>
+                                        <li>Persons to notify of your death, with contact information</li>
+                                        <li>Professional advisors -- lawyer, financial planner, accountant</li>
+                                        <li>Vehicle VIN numbers</li>
+                                        <li>Sources and destinations of automatic deposits/withdrawals from bank account</li>
+                                        <li>Credit and debit card numbers</li>
+                                    </ul>
+                                    
+                                    <div class="alert alert-primary">
+                                        <strong>This is not a complete list. Contact me to prepare your estate planning documents to make sure your agent and executor have all the information they need to carry out your wishes.</strong>
+                                    </div>
+                                </div>
+                            </article>
 
-                    <!-- Blog Post 2 -->
-                    <article class="blog-post mb-5 hover-lift">
-                        <div class="blog-post-header mb-4">
-                            <h2 class="h3 text-primary mb-2">
-                                <a href="#" class="text-decoration-none">
-                                    If you have a pickup truck and a bank account, you need an estate plan
-                                </a>
-                            </h2>
-                            <div class="blog-meta text-muted mb-3">
-                                <i class="fas fa-calendar me-2"></i>March 8, 2013
-                                <i class="fas fa-comments ms-3 me-2"></i>2 Comments
-                            </div>
+                            <!-- Blog Post 2 -->
+                            <article class="blog-post">
+                                <div class="blog-post-header mb-4">
+                                    <h3 class="h4 text-primary mb-2">
+                                        If you have a pickup truck and a bank account, you need an estate plan
+                                    </h3>
+                                    <div class="blog-meta text-muted mb-3">
+                                        <i class="fas fa-calendar me-2"></i>March 8, 2013
+                                        <i class="fas fa-user ms-3 me-2"></i>Sharon K. Lowry
+                                    </div>
+                                </div>
+                                <div class="blog-post-content">
+                                    <p class="lead mb-4">
+                                        Many people -- maybe most people -- think an "estate plan" is only for the wealthy. Not so!
+                                    </p>
+                                    
+                                    <p class="mb-4">
+                                        A simple estate plan consists of a Will (or a Trust, if you have a reason for one), a Durable Power of Attorney for Finances, a Health-Care Power of Attorney, and a Directive to Physicians ("Living Will").
+                                    </p>
+                                    
+                                    <p class="mb-4">
+                                        If you have any property that you want to leave to your family, you need a Will. A Will greatly simplifies the process of making sure your family gets your property after your death. Many banks will not release the bank account to your survivors with only a death certificate -- they want to see "Letters Testamentary" that prove you are the proper person to have the account. And that means probating a Will.
+                                    </p>
+                                    
+                                    <p class="mb-4">
+                                        If you are alive and well, you need powers of attorney and an Advance Directive to make sure that (a) your family can manage your property (such as writing checks to pay your bills) if you are unable to do so; and (b) your family and health-care providers know how to care for you if you become unable to express your wishes.
+                                    </p>
+                                    
+                                    <p class="mb-4">
+                                        Healthy people don't like to think about these things. But don't wait until you become disabled, leaving your family to guess what you want, or, worse, leaving the State of Texas with the power to make decisions about your health care. I got a call today from someone who wants to create an estate plan for himself because his parents, who did not have an estate plan, are now unable to care for themselves and there is no one in the family with the authority to make decisions. This person does not want to put his family through what he is now going through with his parents.
+                                    </p>
+                                    
+                                    <div class="alert alert-primary">
+                                        <strong>Don't leave your family guessing! Talk these things over with your family, and then give me a call. 940-765-4992</strong>
+                                    </div>
+                                </div>
+                            </article>
                         </div>
-                        <div class="blog-post-content">
-                            <p class="lead mb-4">
-                                Many people -- maybe most people -- think an "estate plan" is only for the wealthy. Not so!
-                            </p>
-                            
-                            <p class="mb-4">
-                                A simple estate plan consists of a Will (or a Trust, if you have a reason for one), a Durable Power of Attorney for Finances, a Health-Care Power of Attorney, and a Directive to Physicians ("Living Will").
-                            </p>
-                            
-                            <p class="mb-4">
-                                If you have any property that you want to leave to your family, you need a Will. A Will greatly simplifies the process of making sure your family gets your property after your death. Many banks will not release the bank account to your survivors with only a death certificate -- they want to see "Letters Testamentary" that prove you are the proper person to have the account. And that means probating a Will.
-                            </p>
-                            
-                            <p class="mb-4">
-                                If you are alive and well, you need powers of attorney and an Advance Directive to make sure that (a) your family can manage your property (such as writing checks to pay your bills) if you are unable to do so; and (b) your family and health-care providers know how to care for you if you become unable to express your wishes.
-                            </p>
-                            
-                            <p class="mb-4">
-                                Healthy people don't like to think about these things. But don't wait until you become disabled, leaving your family to guess what you want, or, worse, leaving the State of Texas with the power to make decisions about your health care. I got a call today from someone who wants to create an estate plan for himself because his parents, who did not have an estate plan, are now unable to care for themselves and there is no one in the family with the authority to make decisions. This person does not want to put his family through what he is now going through with his parents.
-                            </p>
-                            
-                            <div class="alert alert-primary">
-                                <strong>Don't leave your family guessing! Talk these things over with your family, and then give me a call. 940-765-4992</strong>
-                            </div>
-                        </div>
-                    </article>
-
-                    <!-- Blog Post 3 -->
-                    <article class="blog-post mb-5 hover-lift">
-                        <div class="blog-post-header mb-4">
-                            <h2 class="h3 text-primary mb-2">
-                                <a href="#" class="text-decoration-none">
-                                    Does Your "Living Will" Tell Your Family Everything They Need to Know?
-                                </a>
-                            </h2>
-                            <div class="blog-meta text-muted mb-3">
-                                <i class="fas fa-calendar me-2"></i>February 20, 2013
-                                <i class="fas fa-comments ms-3 me-2"></i>4 Comments
-                            </div>
-                        </div>
-                        <div class="blog-post-content">
-                            <p class="lead mb-4">
-                                Many people want a "living will" (formally known as an Advance Directive or Directive to Physicians and Family Members) to make sure that their wishes for health care are followed in case they become unable to communicate their wishes. In most cases, people with living wills are trying to avoid unnecessary, painful, and expensive procedures that do nothing to enhance quality of life and only delay an inevitable death.
-                            </p>
-                            
-                            <p class="mb-4">
-                                In a living will, you can say whether you want "life-prolonging procedures," such as CPR, CT scans, dialysis, or other invasive processes after a doctor has certified that your condition is terminal, or that you are near death. Separately, you can say whether you want food and water administered to you even if you don't want any medical procedures performed.
-                            </p>
-                            
-                            <p class="mb-4">
-                                In addition to stating your wishes in these matters, you should also name someone who will be authorized to make decisions not anticipated in your living will if you are unable to do so. Your health-care agent should be prepared to make the decision, for example, to withdraw food and water, if it comes to that. You should also identify your primary care physician.
-                            </p>
-                            
-                            <h4 class="h5 text-primary mb-3">Other Decisions That Should Be Included in a Living Will</h4>
-                            
-                            <p class="mb-4">
-                                In addition to the health-care decisions described above, you should also include answers to the following:
-                            </p>
-                            
-                            <ul class="mb-4">
-                                <li>Do you want to donate your body, organs, or tissue?</li>
-                                <li>Have you made burial or cremation arrangements? If so, what are they? If not, do you want your agent to make these decisions?</li>
-                                <li>Do you want an autopsy or not, or do you want your agent to make this decision for you?</li>
-                            </ul>
-                            
-                            <div class="alert alert-primary">
-                                <strong>Let me help draft your living will! 940-765-4992</strong>
-                            </div>
-                        </div>
-                    </article>
-
-                    <!-- Blog Post 4 -->
-                    <article class="blog-post mb-5 hover-lift">
-                        <div class="blog-post-header mb-4">
-                            <h2 class="h3 text-primary mb-2">
-                                <a href="#" class="text-decoration-none">
-                                    What Happens If I Die Without a Will?
-                                </a>
-                            </h2>
-                            <div class="blog-meta text-muted mb-3">
-                                <i class="fas fa-calendar me-2"></i>February 18, 2013
-                                <i class="fas fa-comments ms-3 me-2"></i>3 Comments
-                            </div>
-                        </div>
-                        <div class="blog-post-content">
-                            <p class="lead mb-4">
-                                Many people think that (a) they don't have enough money or property to need a Will; or (b) their property will automatically go to their spouse or children without the need for a Will. Not necessarily! No estate is too small. And the process is complex.
-                            </p>
-                            
-                            <p class="mb-4">
-                                The Texas Probate Code is very specific on how estates are distributed if there is no Will. Below is just a start:
-                            </p>
-                            
-                            <ul class="mb-4">
-                                <li>If there is no surviving spouse, then to the children and their descendants.</li>
-                                <li>If there is no surviving spouse or children or grandchildren, then to the parents.</li>
-                                <li>If there are no parents, spouse, or descendants, then to cousins.</li>
-                                <li>If one parent survives, then one-half of the decedent's estate goes to that parent and the other half to the brothers and sisters.</li>
-                                <li>If the spouse and one parent survive, then the spouse inherits all the personal property, but only one-half of the real property of the decedent; the parent gets the other half of the real property.</li>
-                                <li>If there is a surviving spouse and children, the surviving spouse gets one-third of the decedent's personal property and his/her children get the other two-thirds; the spouse gets a lifetime interest in one-third of the decedent's real property, and on the death of that spouse, the decedent's children inherit the real property of the decedent.</li>
-                            </ul>
-                            
-                            <div class="alert alert-primary">
-                                <strong>Confused? Call me! 940-765-4992</strong>
-                            </div>
-                        </div>
-                    </article>
+                    </div>
                 </div>
 
-                <!-- Sidebar -->
-                <div class="col-lg-4">
-                    <div class="blog-sidebar">
-                        <!-- Author Box -->
-                        <div class="sidebar-widget mb-5">
-                            <div class="author-box bg-light p-4 rounded">
-                                <div class="text-center mb-3">
-                                    <i class="fas fa-user-circle" style="font-size: 5rem; color: var(--purple-primary);"></i>
+                <!-- FAQ Section -->
+                <div class="col-lg-6 mb-4" id="faq-section">
+                    <div class="content-section">
+                        <div class="content-header">
+                            <h2 class="h3 mb-0">
+                                <i class="fas fa-question-circle me-2"></i>
+                                Frequently Asked Questions
+                            </h2>
+                        </div>
+                        <div class="scrollable-content">
+                            
+                            <!-- FAQ Item 1 -->
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <i class="fas fa-chevron-right"></i>
+                                    Do I Need a Will?
                                 </div>
-                                <h4 class="h5 text-center text-primary mb-3">Sharon K. Lowry</h4>
-                                <p class="text-center mb-0">
-                                    Attorney at Law with experience in probating Wills and navigating the process of administering estates where there is no Will.
-                                </p>
+                                <div class="faq-answer">
+                                    <p>A will is crucial for controlling asset distribution after death. It allows you to name guardians for minor children and appoint an executor. Without a will, state intestacy laws determine asset distribution. Even with trusts, you typically need a "pour-over will" for assets not transferred to the trust.</p>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Archives -->
-                        <div class="sidebar-widget mb-5">
-                            <h4 class="h5 text-primary mb-3">Archives</h4>
-                            <ul class="list-unstyled">
-                                <li class="mb-2">
-                                    <a href="#" class="text-decoration-none text-muted hover-primary">
-                                        <i class="fas fa-chevron-right me-2"></i>March 2015
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="#" class="text-decoration-none text-muted hover-primary">
-                                        <i class="fas fa-chevron-right me-2"></i>March 2013
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="#" class="text-decoration-none text-muted hover-primary">
-                                        <i class="fas fa-chevron-right me-2"></i>February 2013
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- Categories -->
-                        <div class="sidebar-widget mb-5">
-                            <h4 class="h5 text-primary mb-3">Categories</h4>
-                            <ul class="list-unstyled">
-                                <li class="mb-2">
-                                    <a href="#" class="text-decoration-none text-muted hover-primary">
-                                        <i class="fas fa-folder me-2"></i>All Posts
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- Contact CTA -->
-                        <div class="sidebar-widget">
-                            <div class="cta-widget bg-primary text-white p-4 rounded text-center">
-                                <h4 class="h5 mb-3">Need Legal Help?</h4>
-                                <p class="mb-3">
-                                    Schedule a free consultation to discuss your estate planning needs.
-                                </p>
-                                <a href="contact.html" class="btn btn-light pulse-btn">
-                                    <i class="fas fa-phone me-2"></i>
-                                    Call Now
-                                </a>
+                            <!-- FAQ Item 2 -->
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <i class="fas fa-chevron-right"></i>
+                                    What's the Difference Between a Will and an Estate Plan?
+                                </div>
+                                <div class="faq-answer">
+                                    <p>A will is just one component of a comprehensive estate plan. Estate plans include: wills, trusts, powers of attorney, healthcare directives, and beneficiary designations. Estate plans address both death and incapacitation scenarios.</p>
+                                </div>
                             </div>
+
+                            <!-- FAQ Item 3 -->
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <i class="fas fa-chevron-right"></i>
+                                    Should I Create a Trust?
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Trusts help avoid probate, maintain privacy, and can minimize estate taxes. Revocable living trusts are most common and can be changed during your lifetime. Trust assets transfer directly to beneficiaries without court involvement. Consider if you have significant assets, want to avoid probate, or need ongoing asset management.</p>
+                                </div>
+                            </div>
+
+                            <!-- FAQ Item 4 -->
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <i class="fas fa-chevron-right"></i>
+                                    What Happens If I Die Without a Will?
+                                </div>
+                                <div class="faq-answer">
+                                    <p>You die "intestate" and state laws determine who inherits your property. Assets typically go to closest relatives (spouse, children, parents) but may not align with your actual wishes. The probate process becomes more complicated and potentially contentious.</p>
+                                </div>
+                            </div>
+
+                            <!-- FAQ Item 5 -->
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <i class="fas fa-chevron-right"></i>
+                                    What If I Become Incapacitated?
+                                </div>
+                                <div class="faq-answer">
+                                    <p>You need durable power of attorney for financial decisions and healthcare proxy/directive for medical decisions. A living will specifies end-of-life care preferences. Without these, family must petition court for guardianship/conservatorship.</p>
+                                </div>
+                            </div>
+
+                            <!-- FAQ Item 6 -->
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <i class="fas fa-chevron-right"></i>
+                                    Who Should I Choose as My Agent/Trustee?
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Select someone trustworthy, responsible, and available. Consider their financial knowledge and ability to handle the role. They should be able to communicate well with beneficiaries. It's often wise to name backup agents/trustees.</p>
+                                </div>
+                            </div>
+
+                            <!-- FAQ Item 7 -->
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <i class="fas fa-chevron-right"></i>
+                                    How Much Will Estate Planning Cost?
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Simple wills: $150-$600. Comprehensive estate plans with trusts: $1,000-$3,000+. Attorney hourly rates: $200-$500. Costs vary by complexity and geographic location. Contact me for a personalized quote based on your specific needs.</p>
+                                </div>
+                            </div>
+
+                            <!-- FAQ Item 8 -->
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <i class="fas fa-chevron-right"></i>
+                                    How Can I Minimize Estate Taxes?
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Lifetime gifting reduces taxable estate value. Irrevocable trusts shield assets from estate taxes. Marital deduction allows unlimited tax-free transfers between spouses. Life insurance provides liquidity for tax payments.</p>
+                                </div>
+                            </div>
+
+                            <!-- FAQ Item 9 -->
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <i class="fas fa-chevron-right"></i>
+                                    When Should I Update My Estate Plan?
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Review every 3-5 years minimum. Update after major life events: marriage, divorce, births, deaths, significant changes in assets or financial situation, moving to a new state, or changes in tax laws.</p>
+                                </div>
+                            </div>
+
+                            <!-- FAQ Item 10 -->
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <i class="fas fa-chevron-right"></i>
+                                    How Do I Choose the Right Estate Planning Attorney?
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Look for specialization in estate planning law. Ask about experience with estates similar to yours. Inquire about fee structure (flat rate vs. hourly). Request references from past clients. Ensure they stay current with tax law changes.</p>
+                                </div>
+                            </div>
+
+                            <!-- FAQ Item 11 -->
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <i class="fas fa-chevron-right"></i>
+                                    Where Should I Store My Estate Planning Documents?
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Keep originals in a secure, accessible location. Inform trusted family members of document locations. Consider safe deposit box for originals, copies at home. Ensure agents/executors can access documents when needed.</p>
+                                </div>
+                            </div>
+
+                            <!-- FAQ Item 12 -->
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <i class="fas fa-chevron-right"></i>
+                                    What About Digital Assets?
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Include digital assets in your estate plan (emails, photos, social media, cryptocurrency). Consider naming a digital executor. Provide access information for important online accounts. Address privacy concerns for sensitive digital information.</p>
+                                </div>
+                            </div>
+
+                            <!-- FAQ Item 13 -->
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <i class="fas fa-chevron-right"></i>
+                                    How Long Does Estate Planning Take?
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Simple estate plans: 2-4 weeks. Complex plans with trusts: 1-3 months. Depends on document complexity and client responsiveness. Initial consultation typically covers goals and basic strategy.</p>
+                                </div>
+                            </div>
+
+                            <!-- FAQ Item 14 -->
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <i class="fas fa-chevron-right"></i>
+                                    Can I Do Estate Planning Myself?
+                                </div>
+                                <div class="faq-answer">
+                                    <p>DIY options exist but carry significant risks. Complex tax and legal issues require professional expertise. Mistakes can be costly and difficult to fix after death. Professional guidance is recommended for most situations.</p>
+                                </div>
+                            </div>
+
+                            <!-- FAQ Item 15 -->
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <i class="fas fa-chevron-right"></i>
+                                    Do I Need a Lawyer If I Live in Texas?
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Texas has specific laws regarding estate planning and probate. Working with a Texas-licensed attorney ensures your documents comply with state law and maximize protection for your family. I'm experienced with Texas estate law and serve the Denton County area.</p>
+                                </div>
+                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -336,6 +494,56 @@
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showSection(section) {
+            // Toggle active tab
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Show/hide sections based on mobile/desktop view
+            if (window.innerWidth <= 768) {
+                const blogSection = document.getElementById('blog-section');
+                const faqSection = document.getElementById('faq-section');
+                
+                if (section === 'blog') {
+                    blogSection.style.display = 'block';
+                    faqSection.style.display = 'none';
+                } else {
+                    blogSection.style.display = 'none';
+                    faqSection.style.display = 'block';
+                }
+            }
+        }
+
+        function toggleFaq(element) {
+            const answer = element.nextElementSibling;
+            const icon = element.querySelector('i');
+            
+            if (answer.style.display === 'none' || !answer.style.display) {
+                answer.style.display = 'block';
+                icon.style.transform = 'rotate(90deg)';
+            } else {
+                answer.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Initialize FAQ items as collapsed
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.faq-answer').forEach(answer => {
+                answer.style.display = 'none';
+            });
+        });
+
+        // Handle responsive behavior
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                // Show both sections on desktop
+                document.getElementById('blog-section').style.display = 'block';
+                document.getElementById('faq-section').style.display = 'block';
+            }
+        });
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

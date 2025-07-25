@@ -1,90 +1,254 @@
-const http = require('http');
-const fs = require('fs');
+const express = require('express');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
 const path = require('path');
-const url = require('url');
+const fs = require('fs');
+const { Pool } = require('pg');
 
+const app = express();
 const port = process.env.PORT || 5000;
-const hostname = '0.0.0.0';
 
-// MIME types for different file extensions
-const mimeTypes = {
-    '.html': 'text/html',
-    '.css': 'text/css',
-    '.js': 'application/javascript',
-    '.json': 'application/json',
-    '.png': 'image/png',
-    '.jpg': 'image/jpeg',
-    '.jpeg': 'image/jpeg',
-    '.gif': 'image/gif',
-    '.svg': 'image/svg+xml',
-    '.ico': 'image/x-icon',
-    '.woff': 'font/woff',
-    '.woff2': 'font/woff2',
-    '.ttf': 'font/ttf',
-    '.eot': 'application/vnd.ms-fontobject'
-};
-
-const server = http.createServer((req, res) => {
-    const parsedUrl = url.parse(req.url);
-    let pathname = parsedUrl.pathname;
-
-    // Default to index.html for root path
-    if (pathname === '/') {
-        pathname = '/index.html';
-    }
-
-    // Remove leading slash and resolve file path
-    const filePath = path.join(__dirname, pathname.substring(1));
-    const ext = path.extname(filePath).toLowerCase();
-
-    // Check if file exists
-    fs.access(filePath, fs.constants.F_OK, (err) => {
-        if (err) {
-            // File not found - try to serve index.html for SPA routes
-            if (ext === '' || ext === '.html') {
-                const indexPath = path.join(__dirname, 'index.html');
-                fs.readFile(indexPath, (err, data) => {
-                    if (err) {
-                        res.writeHead(404, { 'Content-Type': 'text/plain' });
-                        res.end('404 - Page Not Found');
-                        return;
-                    }
-                    res.writeHead(200, { 'Content-Type': 'text/html' });
-                    res.end(data);
-                });
-            } else {
-                res.writeHead(404, { 'Content-Type': 'text/plain' });
-                res.end('404 - File Not Found');
-            }
-            return;
-        }
-
-        // File exists, serve it
-        fs.readFile(filePath, (err, data) => {
-            if (err) {
-                res.writeHead(500, { 'Content-Type': 'text/plain' });
-                res.end('500 - Internal Server Error');
-                return;
-            }
-
-            const mimeType = mimeTypes[ext] || 'application/octet-stream';
-            res.writeHead(200, { 
-                'Content-Type': mimeType,
-                'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=86400'
-            });
-            res.end(data);
-        });
-    });
+// Database connection
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
-server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
+// Initialize database tables
+async function initializeDatabase() {
+    try {
+        // Create users table
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                username VARCHAR(50) UNIQUE NOT NULL,
+                password_hash VARCHAR(255) NOT NULL,
+                role VARCHAR(20) DEFAULT 'user',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+
+        // Create consultation responses table
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS consultation_responses (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(255),
+                email VARCHAR(255),
+                phone VARCHAR(50),
+                service_type VARCHAR(100),
+                timeline VARCHAR(100),
+                case_details TEXT,
+                admin_notes TEXT,
+                status VARCHAR(20) DEFAULT 'unread',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+
+        // Insert default admin user if it doesn't exist
+        const adminExists = await pool.query('SELECT id FROM users WHERE username = $1', ['admin']);
+        if (adminExists.rows.length === 0) {
+            const bcrypt = require('bcrypt');
+            const hashedPassword = await bcrypt.hash('admin123', 10);
+            await pool.query(
+                'INSERT INTO users (username, password_hash, role) VALUES ($1, $2, $3)',
+                ['admin', hashedPassword, 'admin']
+            );
+            console.log('Default admin user created: admin/admin123');
+        }
+
+        console.log('Database initialized successfully');
+    } catch (err) {
+        console.error('Database initialization error:', err);
+    }
+}
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'your-secret-key-change-this',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+        secure: false, // Set to true in production with HTTPS
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+}));
+
+// Authentication middleware
+function requireAuth(req, res, next) {
+    if (req.session.user && req.session.user.role === 'admin') {
+        next();
+    } else {
+        res.status(401).json({ error: 'Authentication required' });
+    }
+}
+
+// Static files middleware
+app.use(express.static('.', {
+    index: false, // Disable automatic index serving
+    setHeaders: (res, path) => {
+        if (path.endsWith('.html')) {
+            res.setHeader('Cache-Control', 'no-cache');
+        }
+    }
+}));
+
+// Authentication routes
+app.post('/api/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+        
+        if (result.rows.length === 0) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        const user = result.rows[0];
+        const bcrypt = require('bcrypt');
+        const isValid = await bcrypt.compare(password, user.password_hash);
+
+        if (!isValid) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        req.session.user = {
+            id: user.id,
+            username: user.username,
+            role: user.role
+        };
+
+        res.json({ 
+            success: true, 
+            user: { username: user.username, role: user.role }
+        });
+    } catch (err) {
+        console.error('Login error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+app.post('/api/logout', (req, res) => {
+    req.session.destroy();
+    res.json({ success: true });
+});
+
+app.get('/api/auth/status', (req, res) => {
+    if (req.session.user) {
+        res.json({ 
+            isAuthenticated: true, 
+            user: { username: req.session.user.username, role: req.session.user.role }
+        });
+    } else {
+        res.json({ isAuthenticated: false });
+    }
+});
+
+// Consultation responses API
+app.post('/api/consultation', async (req, res) => {
+    try {
+        const { name, email, phone, service_type, timeline, case_details } = req.body;
+        
+        const result = await pool.query(`
+            INSERT INTO consultation_responses 
+            (name, email, phone, service_type, timeline, case_details)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING id
+        `, [name, email, phone, service_type, timeline, case_details]);
+
+        res.json({ success: true, id: result.rows[0].id });
+    } catch (err) {
+        console.error('Consultation submission error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+app.get('/api/consultations', requireAuth, async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT * FROM consultation_responses 
+            ORDER BY created_at DESC
+        `);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Consultations fetch error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+app.put('/api/consultations/:id', requireAuth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status, admin_notes } = req.body;
+        
+        await pool.query(`
+            UPDATE consultation_responses 
+            SET status = $1, admin_notes = $2, updated_at = CURRENT_TIMESTAMP
+            WHERE id = $3
+        `, [status, admin_notes, id]);
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Consultation update error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+app.delete('/api/consultations/:id', requireAuth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        await pool.query('DELETE FROM consultation_responses WHERE id = $1', [id]);
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Consultation delete error:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Serve HTML pages
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/admin', (req, res) => {
+    if (req.session.user && req.session.user.role === 'admin') {
+        res.sendFile(path.join(__dirname, 'admin.html'));
+    } else {
+        res.redirect('/?login=required');
+    }
+});
+
+// Catch-all for other routes
+app.get('*', (req, res) => {
+    const filePath = path.join(__dirname, req.path);
+    
+    // Check if file exists
+    if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+        res.sendFile(filePath);
+    } else {
+        // Try to serve corresponding HTML file
+        const htmlPath = path.join(__dirname, req.path.replace(/\/$/, '') + '.html');
+        if (fs.existsSync(htmlPath)) {
+            res.sendFile(htmlPath);
+        } else {
+            res.status(404).sendFile(path.join(__dirname, 'index.html'));
+        }
+    }
+});
+
+// Initialize database and start server
+initializeDatabase().then(() => {
+    app.listen(port, '0.0.0.0', () => {
+        console.log(`Server running at http://0.0.0.0:${port}/`);
+    });
 });
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
     console.log('SIGTERM received, shutting down gracefully');
-    server.close(() => {
-        console.log('Process terminated');
+    pool.end(() => {
+        process.exit(0);
     });
 });

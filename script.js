@@ -458,7 +458,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 errorMessage: "Please select a service or let me know if you need guidance."
             },
             {
-                question: "Excellent choice. When would you like to schedule your free consultation?",
+                question: "Excellent choice. When would you like to schedule your consultation?",
                 field: 'timeline',
                 options: [
                     'As soon as possible',
@@ -507,7 +507,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Handle schedule button click
         if (scheduleBtn) {
-            scheduleBtn.addEventListener('click', function() {
+            scheduleBtn.addEventListener('click', async function() {
+                // Save consultation data to database
+                try {
+                    const response = await fetch('/api/consultation', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: conversationState.data.name,
+                            email: conversationState.data.email,
+                            phone: conversationState.data.phone,
+                            service_type: conversationState.data.serviceType,
+                            timeline: conversationState.data.timeline,
+                            case_details: conversationState.data.details
+                        })
+                    });
+
+                    if (response.ok) {
+                        // Show success message
+                        addMessage("✅ Your consultation request has been saved! Sharon will review it and contact you soon.", 'bot');
+                    }
+                } catch (error) {
+                    console.error('Error saving consultation:', error);
+                    addMessage("⚠️ Your request was noted, but there was an issue saving it. Please call directly at (940) 765-4992.", 'bot');
+                }
+
                 // Generate consultation summary email
                 const emailSubject = `Consultation Request - ${conversationState.data.name}`;
                 const emailBody = generateEmailBody();

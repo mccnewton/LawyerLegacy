@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sharon K. Lowry - Estate Planning & Probate Attorney | Denton, TX</title>
-    <meta name="description" content="Experienced estate planning and probate attorney in Denton, TX. Wills, probate, powers of attorney, and heirship applications. Free consultation.">
+    <meta name="description" content="Experienced estate planning and probate attorney in Denton, TX. Wills, probate, powers of attorney, and heirship applications. Professional consultation.">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
@@ -32,7 +32,7 @@
                         <a class="nav-link" href="services.html">Legal Services</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="blog.html">Blog</a>
+                        <a class="nav-link" href="blog.html">Blog & FAQ</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="contact.html">Contact</a>
@@ -58,7 +58,7 @@
                         <div class="hero-buttons fade-in delay-2">
                             <a href="contact.html" class="btn btn-light btn-lg me-3 pulse-btn">
                                 <i class="fas fa-phone me-2"></i>
-                                Free Consultation
+                                Schedule Consultation
                             </a>
                             <a href="about.html" class="btn btn-outline-light btn-lg">
                                 Learn More
@@ -322,11 +322,11 @@
                 <div class="col-lg-8 mx-auto text-center">
                     <h2 class="display-5 fw-bold text-white mb-4">Ready to Protect Your Family's Future?</h2>
                     <p class="lead text-white-75 mb-4">
-                        Don't leave your family guessing about your wishes. Schedule a free consultation today to discuss your estate planning needs.
+                        Don't leave your family guessing about your wishes. Schedule a consultation today to discuss your estate planning needs.
                     </p>
                     <a href="contact.html" class="btn btn-light btn-lg pulse-btn">
                         <i class="fas fa-calendar-alt me-2"></i>
-                        Schedule Free Consultation
+                        Schedule Consultation
                     </a>
                 </div>
             </div>
@@ -365,15 +365,93 @@
             <hr class="my-4">
             <div class="row">
                 <div class="col-12 text-center">
-                    <p class="mb-0 text-muted">
+                    <p class="mb-2 text-muted">
                         &copy; 2025 Law Office of Sharon K. Lowry. All rights reserved.
                     </p>
+                    <p class="mb-0">
+                        <small>
+                            <a href="#" class="text-muted text-decoration-none" onclick="showLogin()">
+                                Admin Access
+                            </a>
+                        </small>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Login Modal -->
+            <div class="modal fade" id="loginModal" tabindex="-1">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Admin Login</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="loginForm">
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Username</label>
+                                    <input type="text" class="form-control" id="username" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="password" required>
+                                </div>
+                                <div id="loginError" class="alert alert-danger d-none"></div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="handleLogin()">Login</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showLogin() {
+            const modal = new bootstrap.Modal(document.getElementById('loginModal'));
+            modal.show();
+        }
+
+        async function handleLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.href = '/admin';
+                } else {
+                    errorDiv.textContent = data.error || 'Invalid credentials';
+                    errorDiv.classList.remove('d-none');
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Login failed. Please try again.';
+                errorDiv.classList.remove('d-none');
+            }
+        }
+
+        // Handle Enter key in login form
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('loginForm').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleLogin();
+                }
+            });
+        });
+    </script>
     <script src="script.js"></script>
 </body>
 </html>
