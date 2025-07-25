@@ -45,16 +45,20 @@ async function initializeDatabase() {
             )
         `);
 
-        // Insert default admin user if it doesn't exist
-        const adminExists = await pool.query('SELECT id FROM users WHERE username = $1', ['admin']);
-        if (adminExists.rows.length === 0) {
-            const bcrypt = require('bcrypt');
-            const hashedPassword = await bcrypt.hash('admin123', 10);
-            await pool.query(
-                'INSERT INTO users (username, password_hash, role) VALUES ($1, $2, $3)',
-                ['admin', hashedPassword, 'admin']
-            );
-            console.log('Default admin user created: admin/admin123');
+        // Insert authorized admin users if they don't exist
+        const authorizedEmails = ['creageco@gmail.com', 'mccnewton@gmail.com'];
+        const bcrypt = require('bcrypt');
+        
+        for (const email of authorizedEmails) {
+            const userExists = await pool.query('SELECT id FROM users WHERE username = $1', [email]);
+            if (userExists.rows.length === 0) {
+                const hashedPassword = await bcrypt.hash('admin123', 10);
+                await pool.query(
+                    'INSERT INTO users (username, password_hash, role) VALUES ($1, $2, $3)',
+                    [email, hashedPassword, 'admin']
+                );
+                console.log(`Admin user created: ${email}/admin123`);
+            }
         }
 
         console.log('Database initialized successfully');
@@ -100,6 +104,13 @@ app.use(express.static('.', {
 app.post('/api/login', async (req, res) => {
     try {
         const { username, password } = req.body;
+        
+        // Check if email is authorized
+        const authorizedEmails = ['creageco@gmail.com', 'mccnewton@gmail.com'];
+        if (!authorizedEmails.includes(username)) {
+            return res.status(401).json({ error: 'Unauthorized email address' });
+        }
+        
         const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
         
         if (result.rows.length === 0) {
