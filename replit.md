@@ -10,14 +10,12 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-### Floating Chatbot Implementation (July 25, 2025)
-- Created floating chatbot bubble that appears on all pages in bottom-right corner
-- Removed large consultation assistant section from Contact page
-- Updated all "Start Planning" buttons on Services page to open floating chatbot
-- Contact menu now correctly goes to top of Contact page
-- Floating chatbot can be opened/closed with X button and clicking outside
-- Maintained all existing chatbot functionality in compact floating window
-- Added consultation info section on Contact page with button to open chatbot
+### Floating Chatbot Removal (July 25, 2025)
+- Completely removed floating chatbot feature due to technical issues
+- Cleaned up all floating chatbot CSS and JavaScript code
+- Updated "Start Planning" buttons to navigate to Contact page consultation section
+- Simplified site architecture by removing complex chatbot overlay functionality
+- Contact page consultation assistant remains fully functional as embedded feature
 
 ## System Architecture
 
