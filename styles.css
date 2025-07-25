@@ -1207,3 +1207,81 @@ body {
         animation: none;
     }
 }
+
+/* Global border styles for consistent theme */
+.content-section {
+    border: 2px solid var(--purple-primary) !important;
+    border-radius: 8px !important;
+}
+
+.service-card {
+    border: 2px solid var(--purple-primary) !important;
+    border-radius: 8px !important;
+}
+
+.consultation-assistant,
+.consultation-info-section,
+.cta-box,
+.about-card,
+.service-detail-card,
+.contact-card,
+.admin-login-form,
+.card,
+.alert {
+    border: 2px solid var(--purple-primary) !important;
+    border-radius: 8px !important;
+}
+
+.form-control {
+    border: 1px solid var(--purple-secondary) !important;
+}
+
+.form-control:focus {
+    border-color: var(--purple-primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(102, 51, 153, 0.25) !important;
+}
+
+/* Blog collapsible styles */
+.blog-post-collapsible {
+    border: 2px solid var(--purple-primary);
+    border-radius: 8px;
+    background: var(--white);
+    overflow: hidden;
+}
+
+.blog-post-header-collapsible {
+    padding: 1rem;
+    background: var(--purple-light);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.blog-post-header-collapsible:hover {
+    background: #e8ddf0;
+}
+
+.blog-post-content-collapsible {
+    background: var(--white);
+    border-top: 1px solid var(--purple-secondary);
+}
+
+.blog-toggle-icon {
+    transition: transform 0.3s ease;
+    color: var(--purple-primary);
+}
+
+.blog-toggle-icon.rotated {
+    transform: rotate(180deg);
+}
+
+/* Admin login styles */
+.admin-access-section {
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.admin-login-form {
+    background: var(--light-gray);
+    padding: 1.5rem;
+    border-radius: 8px;
+}
