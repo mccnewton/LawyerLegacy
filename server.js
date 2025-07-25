@@ -595,6 +595,68 @@ app.delete('/api/consultations/:id', requireAuth, async (req, res) => {
     }
 });
 
+// New consultation request API endpoints
+app.post('/api/consultation-request', async (req, res) => {
+    try {
+        const { name, email, phone, legal_service, message } = req.body;
+        
+        // Validate required fields
+        if (!name || !email || !legal_service) {
+            return res.status(400).json({ error: 'Name, email, and legal service are required' });
+        }
+        
+        // Insert consultation request into database
+        const result = await pool.query(
+            'INSERT INTO consultation_requests (name, email, phone, legal_service, message, status, created_at) VALUES ($1, $2, $3, $4, $5, $6, NOW()) RETURNING *',
+            [name, email, phone || null, legal_service, message || null, 'unread']
+        );
+        
+        res.json({ 
+            success: true, 
+            message: 'Consultation request submitted successfully',
+            request_id: result.rows[0].id
+        });
+    } catch (error) {
+        console.error('Error submitting consultation request:', error);
+        res.status(500).json({ error: 'Failed to submit consultation request' });
+    }
+});
+
+// API endpoint to get consultation requests (admin only)
+app.get('/api/consultation-requests', requireAuth, async (req, res) => {
+    try {
+        const result = await pool.query(
+            'SELECT * FROM consultation_requests ORDER BY created_at DESC'
+        );
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching consultation requests:', error);
+        res.status(500).json({ error: 'Failed to fetch consultation requests' });
+    }
+});
+
+// API endpoint to update consultation request status (admin only)
+app.patch('/api/consultation-requests/:id', requireAuth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+        
+        const result = await pool.query(
+            'UPDATE consultation_requests SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
+            [status, id]
+        );
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Consultation request not found' });
+        }
+        
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error('Error updating consultation request:', error);
+        res.status(500).json({ error: 'Failed to update consultation request' });
+    }
+});
+
 // Serve HTML pages
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));

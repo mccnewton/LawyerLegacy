@@ -194,7 +194,7 @@
                 document.getElementById('consultationsList').style.display = 'none';
                 document.getElementById('emptyState').style.display = 'none';
 
-                const response = await fetch('/api/consultations');
+                const response = await fetch('/api/consultation-requests');
                 const consultations = await response.json();
                 
                 currentConsultations = consultations;
@@ -247,10 +247,10 @@
                                         <i class="fas fa-phone ms-3 me-1"></i>${consultation.phone || 'Not provided'}
                                     </p>
                                     <p class="card-text mb-1">
-                                        <strong>Service:</strong> ${consultation.service_type || 'Not specified'}
+                                        <strong>Service:</strong> ${consultation.legal_service || 'Not specified'}
                                     </p>
                                     <p class="card-text text-muted small">
-                                        ${consultation.case_details ? consultation.case_details.substring(0, 150) + '...' : 'No details provided'}
+                                        ${consultation.message ? consultation.message.substring(0, 150) + '...' : 'No details provided'}
                                     </p>
                                 </div>
                                 <div class="col-md-4 text-end">
@@ -290,7 +290,7 @@
                         <p><strong>Name:</strong> ${selectedConsultation.name}</p>
                         <p><strong>Email:</strong> ${selectedConsultation.email}</p>
                         <p><strong>Phone:</strong> ${selectedConsultation.phone || 'Not provided'}</p>
-                        <p><strong>Service Type:</strong> ${selectedConsultation.service_type || 'Not specified'}</p>
+                        <p><strong>Legal Service:</strong> ${selectedConsultation.legal_service || 'Not specified'}</p>
                         <p><strong>Timeline:</strong> ${selectedConsultation.timeline || 'Not specified'}</p>
                     </div>
                     <div class="col-md-6">
@@ -307,13 +307,13 @@
                 <div class="row">
                     <div class="col-12">
                         <h6>Case Details</h6>
-                        <p class="border p-3 bg-light">${selectedConsultation.case_details || 'No details provided'}</p>
+                        <p class="border p-3 bg-light">${selectedConsultation.message || 'No details provided'}</p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12">
                         <h6>Admin Notes</h6>
-                        <textarea class="form-control" id="adminNotes" rows="4" placeholder="Add your notes here...">${selectedConsultation.admin_notes || ''}</textarea>
+                        <p class="text-muted small">Note: Additional admin notes functionality can be added in future updates.</p>
                     </div>
                 </div>
             `;
@@ -341,10 +341,10 @@
                 const status = document.getElementById('statusSelect').value;
                 const adminNotes = document.getElementById('adminNotes').value;
 
-                const response = await fetch(`/api/consultations/${selectedConsultation.id}`, {
-                    method: 'PUT',
+                const response = await fetch(`/api/consultation-requests/${selectedConsultation.id}`, {
+                    method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status, admin_notes: adminNotes })
+                    body: JSON.stringify({ status })
                 });
 
                 if (response.ok) {
