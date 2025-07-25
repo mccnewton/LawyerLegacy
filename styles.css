@@ -1287,3 +1287,16 @@ body {
     display: inline-block !important;
     line-height: 1 !important;
 }
+
+/* Ensure outline buttons have proper text color on colored backgrounds */
+.btn-outline-primary {
+    color: var(--purple-primary) !important;
+    background-color: white !important;
+    border: 2px solid var(--purple-primary) !important;
+}
+
+.btn-outline-primary:hover {
+    color: white !important;
+    background-color: var(--purple-primary) !important;
+    border-color: var(--purple-primary) !important;
+}
