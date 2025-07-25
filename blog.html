@@ -78,26 +78,7 @@
             border-bottom: none;
             margin-bottom: 0;
         }
-        .section-tabs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-        }
-        .tab-btn {
-            background: transparent;
-            border: 2px solid var(--purple-primary);
-            color: var(--purple-primary);
-            padding: 0.75rem 2rem;
-            margin: 0 0.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        .tab-btn.active,
-        .tab-btn:hover {
-            background: var(--purple-primary);
-            color: white;
-        }
+
         
         .blog-post {
             border-bottom: 3px solid #e9ecef;
@@ -123,14 +104,6 @@
         @media (max-width: 768px) {
             .scrollable-content {
                 height: 400px;
-            }
-            .section-tabs {
-                flex-direction: column;
-                align-items: center;
-            }
-            .tab-btn {
-                margin: 0.25rem 0;
-                width: 200px;
             }
         }
     </style>
@@ -182,19 +155,7 @@
         </div>
     </section>
 
-    <!-- Section Navigation -->
-    <section class="py-4">
-        <div class="container">
-            <div class="section-tabs">
-                <button class="tab-btn active" onclick="showSection('blog')">
-                    <i class="fas fa-info-circle me-2"></i>Blog Posts
-                </button>
-                <button class="tab-btn" onclick="showSection('faq')">
-                    <i class="fas fa-question-circle me-2"></i>FAQ
-                </button>
-            </div>
-        </div>
-    </section>
+
 
     <!-- Main Content -->
     <section class="py-5">
@@ -287,7 +248,7 @@
                 </div>
 
                 <!-- FAQ Section -->
-                <div class="col-lg-10 mb-4" id="faq-section" style="display: none;">
+                <div class="col-lg-10 mb-4" id="faq-section">
                     <div class="content-section">
                         <div class="content-header">
                             <h2 class="h3 mb-0">
