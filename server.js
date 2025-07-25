@@ -126,20 +126,21 @@ passport.use(new GoogleStrategy({
             return done(null, false, { message: 'Unauthorized email address' });
         }
         
-        // Check if user already exists
+        // Check if user already exists by OAuth ID
         let result = await pool.query('SELECT * FROM users WHERE oauth_id = $1 AND oauth_provider = $2', [profile.id, 'google']);
         let user = result.rows[0];
         
         if (!user) {
-            // Check by email
-            result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+            // Check by email or username
+            result = await pool.query('SELECT * FROM users WHERE email = $1 OR username = $1', [email]);
             user = result.rows[0];
             
             if (!user) {
-                // Create new user
+                // Create new user with unique username
+                const username = `google_${profile.id}`;
                 result = await pool.query(
                     'INSERT INTO users (username, email, oauth_provider, oauth_id, display_name, role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-                    [email, email, 'google', profile.id, profile.displayName, 'admin']
+                    [username, email, 'google', profile.id, profile.displayName, 'admin']
                 );
                 user = result.rows[0];
             } else {
@@ -148,6 +149,9 @@ passport.use(new GoogleStrategy({
                     'UPDATE users SET oauth_provider = $1, oauth_id = $2, display_name = $3 WHERE id = $4',
                     ['google', profile.id, profile.displayName, user.id]
                 );
+                user.oauth_provider = 'google';
+                user.oauth_id = profile.id;
+                user.display_name = profile.displayName;
             }
         }
         
@@ -173,18 +177,19 @@ passport.use(new FacebookStrategy({
             return done(null, false, { message: 'Unauthorized email address' });
         }
         
-        // Similar logic as Google strategy
+        // Check if user already exists by OAuth ID
         let result = await pool.query('SELECT * FROM users WHERE oauth_id = $1 AND oauth_provider = $2', [profile.id, 'facebook']);
         let user = result.rows[0];
         
         if (!user) {
-            result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+            result = await pool.query('SELECT * FROM users WHERE email = $1 OR username = $1', [email]);
             user = result.rows[0];
             
             if (!user) {
+                const username = `facebook_${profile.id}`;
                 result = await pool.query(
                     'INSERT INTO users (username, email, oauth_provider, oauth_id, display_name, role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-                    [email, email, 'facebook', profile.id, `${profile.name.givenName} ${profile.name.familyName}`, 'admin']
+                    [username, email, 'facebook', profile.id, `${profile.name.givenName} ${profile.name.familyName}`, 'admin']
                 );
                 user = result.rows[0];
             } else {
@@ -192,6 +197,9 @@ passport.use(new FacebookStrategy({
                     'UPDATE users SET oauth_provider = $1, oauth_id = $2, display_name = $3 WHERE id = $4',
                     ['facebook', profile.id, `${profile.name.givenName} ${profile.name.familyName}`, user.id]
                 );
+                user.oauth_provider = 'facebook';
+                user.oauth_id = profile.id;
+                user.display_name = `${profile.name.givenName} ${profile.name.familyName}`;
             }
         }
         
@@ -220,18 +228,19 @@ passport.use(new GitHubStrategy({
             return done(null, false, { message: 'Unauthorized email address' });
         }
         
-        // Similar logic as other strategies
+        // Check if user already exists by OAuth ID
         let result = await pool.query('SELECT * FROM users WHERE oauth_id = $1 AND oauth_provider = $2', [profile.id, 'github']);
         let user = result.rows[0];
         
         if (!user) {
-            result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+            result = await pool.query('SELECT * FROM users WHERE email = $1 OR username = $1', [email]);
             user = result.rows[0];
             
             if (!user) {
+                const username = `github_${profile.id}`;
                 result = await pool.query(
                     'INSERT INTO users (username, email, oauth_provider, oauth_id, display_name, role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-                    [email, email, 'github', profile.id, profile.displayName || profile.username, 'admin']
+                    [username, email, 'github', profile.id, profile.displayName || profile.username, 'admin']
                 );
                 user = result.rows[0];
             } else {
@@ -239,6 +248,9 @@ passport.use(new GitHubStrategy({
                     'UPDATE users SET oauth_provider = $1, oauth_id = $2, display_name = $3 WHERE id = $4',
                     ['github', profile.id, profile.displayName || profile.username, user.id]
                 );
+                user.oauth_provider = 'github';
+                user.oauth_id = profile.id;
+                user.display_name = profile.displayName || profile.username;
             }
         }
         
