@@ -74,9 +74,9 @@
                 <!-- Phone -->
                 <div class="col-lg-4 col-md-6">
                     <div class="contact-card text-center h-100 hover-lift">
-                        <button class="contact-icon-btn mb-3" onclick="copyToClipboard('(940) 765-4992', 'Phone number')" title="Click to copy phone number">
+                        <div class="contact-icon mb-3">
                             <i class="fas fa-phone"></i>
-                        </button>
+                        </div>
                         <h4 class="h5 text-primary mb-3">Call Us</h4>
                         <p class="mb-3">
                             <a href="tel:9407654992" class="text-decoration-none text-dark fw-bold">
@@ -84,7 +84,7 @@
                             </a>
                         </p>
                         <p class="text-muted mb-0">
-                            Click icon to copy number
+                            Call for your consultation
                         </p>
                     </div>
                 </div>
@@ -92,9 +92,9 @@
                 <!-- Email -->
                 <div class="col-lg-4 col-md-6">
                     <div class="contact-card text-center h-100 hover-lift">
-                        <button class="contact-icon-btn mb-3" onclick="copyToClipboard('sklowry@sklowrylaw.com', 'Email address')" title="Click to copy email address">
+                        <div class="contact-icon mb-3">
                             <i class="fas fa-envelope"></i>
-                        </button>
+                        </div>
                         <h4 class="h5 text-primary mb-3">Email Us</h4>
                         <p class="mb-3">
                             <a href="mailto:sklowry@sklowrylaw.com" class="text-decoration-none text-dark fw-bold">
@@ -102,7 +102,7 @@
                             </a>
                         </p>
                         <p class="text-muted mb-0">
-                            Click icon to copy email
+                            Send us your questions
                         </p>
                     </div>
                 </div>
@@ -110,9 +110,9 @@
                 <!-- Address -->
                 <div class="col-lg-4 col-md-12">
                     <div class="contact-card text-center h-100 hover-lift">
-                        <button class="contact-icon-btn mb-3" onclick="copyToClipboard('121 W. Hickory Street, Suite 105, Denton, TX 76201', 'Address')" title="Click to copy address">
+                        <div class="contact-icon mb-3">
                             <i class="fas fa-map-marker-alt"></i>
-                        </button>
+                        </div>
                         <h4 class="h5 text-primary mb-3">Visit Us</h4>
                         <p class="mb-3 fw-bold">
                             121 W. Hickory Street<br>
@@ -120,7 +120,7 @@
                             Denton, TX 76201
                         </p>
                         <p class="text-muted mb-0">
-                            Click icon to copy address
+                            On the Courthouse Square
                         </p>
                     </div>
                 </div>
@@ -417,47 +417,7 @@
             }
         }
 
-        // Copy to clipboard function
-        async function copyToClipboard(text, label) {
-            try {
-                await navigator.clipboard.writeText(text);
-                
-                // Show temporary feedback
-                const event = { target: event.target || document.activeElement };
-                const button = event.target.closest('.contact-icon-btn');
-                const originalContent = button.innerHTML;
-                
-                button.innerHTML = '<i class="fas fa-check"></i>';
-                button.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
-                
-                setTimeout(() => {
-                    button.innerHTML = originalContent;
-                    button.style.background = '';
-                }, 1500);
-                
-            } catch (err) {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = text;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                
-                // Show feedback
-                const button = event.target.closest('.contact-icon-btn');
-                if (button) {
-                    const originalContent = button.innerHTML;
-                    button.innerHTML = '<i class="fas fa-check"></i>';
-                    button.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
-                    
-                    setTimeout(() => {
-                        button.innerHTML = originalContent;
-                        button.style.background = '';
-                    }, 1500);
-                }
-            }
-        }
+
 
         // Handle Enter key in login form
         document.addEventListener('DOMContentLoaded', function() {
