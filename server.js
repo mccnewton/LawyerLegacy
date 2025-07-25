@@ -105,10 +105,13 @@ passport.use(new LocalStrategy({
 }));
 
 // Google OAuth Strategy
+const callbackURL = process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}/auth/google/callback` : "/auth/google/callback";
+console.log('Google OAuth Callback URL:', callbackURL);
+
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}/auth/google/callback` : "/auth/google/callback"
+    callbackURL: callbackURL
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         const email = profile.emails && profile.emails[0] ? profile.emails[0].value : null;
