@@ -11,6 +11,7 @@ const GitHubStrategy = require('passport-github2').Strategy;
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const { Issuer, Strategy } = require('openid-client');
+const nodemailer = require('nodemailer');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -74,6 +75,79 @@ async function initializeDatabase() {
         console.log('Database initialized successfully');
     } catch (err) {
         console.error('Database initialization error:', err);
+    }
+}
+
+// Email configuration
+const createEmailTransporter = () => {
+    // For development, use Ethereal Email (test account)
+    // For production, you would use a real email service like Gmail, SendGrid, etc.
+    return nodemailer.createTransporter({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.EMAIL_USER || 'your-email@gmail.com',
+            pass: process.env.EMAIL_PASSWORD || 'your-app-password'
+        }
+    });
+};
+
+// Function to send consultation notification email
+async function sendConsultationNotification(consultationData) {
+    try {
+        const transporter = createEmailTransporter();
+        
+        const mailOptions = {
+            from: process.env.EMAIL_USER || 'noreply@sharonlowrylaw.com',
+            to: process.env.NOTIFICATION_EMAIL || 'creageco@gmail.com', // Default to admin email
+            subject: 'New Consultation Request - Sharon K. Lowry Law',
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h2 style="color: #4B0082; border-bottom: 2px solid #4B0082; padding-bottom: 10px;">
+                        New Consultation Request
+                    </h2>
+                    
+                    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        <h3 style="color: #333; margin-top: 0;">Client Information</h3>
+                        <p><strong>Name:</strong> ${consultationData.name}</p>
+                        <p><strong>Email:</strong> ${consultationData.email}</p>
+                        <p><strong>Phone:</strong> ${consultationData.phone || 'Not provided'}</p>
+                        <p><strong>Legal Service:</strong> ${consultationData.legal_service || 'Not specified'}</p>
+                    </div>
+                    
+                    <div style="background-color: #ffffff; padding: 20px; border-left: 4px solid #4B0082; margin: 20px 0;">
+                        <h3 style="color: #333; margin-top: 0;">Message Details</h3>
+                        <p style="line-height: 1.6;">${consultationData.message || 'No details provided'}</p>
+                    </div>
+                    
+                    <div style="background-color: #e9ecef; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                        <p style="margin: 0; color: #6c757d; font-size: 14px;">
+                            <strong>Submitted:</strong> ${new Date(consultationData.created_at).toLocaleString()}
+                        </p>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="${process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}/admin.html` : 'http://localhost:5000/admin.html'}" 
+                           style="background-color: #4B0082; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                            View in Admin Dashboard
+                        </a>
+                    </div>
+                    
+                    <hr style="border: none; border-top: 1px solid #dee2e6; margin: 30px 0;">
+                    <p style="color: #6c757d; font-size: 12px; text-align: center;">
+                        This is an automated notification from Sharon K. Lowry Law website consultation system.
+                    </p>
+                </div>
+            `
+        };
+        
+        await transporter.sendMail(mailOptions);
+        console.log('Consultation notification email sent successfully');
+        return true;
+    } catch (error) {
+        console.error('Failed to send consultation notification email:', error);
+        return false;
     }
 }
 
@@ -611,10 +685,17 @@ app.post('/api/consultation-request', async (req, res) => {
             [name, email, phone || null, legal_service, message || null, 'unread']
         );
         
+        const consultationData = result.rows[0];
+        
+        // Send email notification (don't block response if email fails)
+        sendConsultationNotification(consultationData).catch(error => {
+            console.error('Email notification failed, but consultation was saved:', error);
+        });
+        
         res.json({ 
             success: true, 
             message: 'Consultation request submitted successfully',
-            request_id: result.rows[0].id
+            request_id: consultationData.id
         });
     } catch (error) {
         console.error('Error submitting consultation request:', error);
