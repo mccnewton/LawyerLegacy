@@ -187,6 +187,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             checkAuthStatus();
             loadConsultations();
+            initializeFilters(); // Initialize filters after DOM is loaded
         });
 
         async function checkAuthStatus() {
@@ -532,8 +533,16 @@
 
         // Filter buttons - Initialize after DOM content is loaded
         function initializeFilters() {
-            document.querySelectorAll('[data-filter]').forEach(btn => {
-                btn.addEventListener('click', function() {
+            console.log('Initializing filters...');
+            const filterButtons = document.querySelectorAll('[data-filter]');
+            console.log('Found filter buttons:', filterButtons.length);
+            
+            filterButtons.forEach(btn => {
+                console.log('Adding listener to button:', btn.textContent, 'filter:', btn.dataset.filter);
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Filter button clicked:', this.dataset.filter);
+                    
                     // Remove active class from all filter buttons
                     document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
                     // Add active class to clicked button
@@ -541,6 +550,7 @@
                     
                     // Update current filter
                     currentFilter = this.dataset.filter;
+                    console.log('Current filter set to:', currentFilter);
                     
                     // Filter consultations based on selection
                     let filtered;
@@ -550,9 +560,10 @@
                         filtered = currentConsultations.filter(c => c.status === currentFilter);
                     }
                     
+                    console.log('Filtered consultations:', filtered.length);
+                    
                     // Render filtered consultations
                     renderConsultations(filtered);
-                    updateStatistics(filtered);
                     
                     // Clear any selections when filtering
                     document.querySelectorAll('.consultation-checkbox').forEach(cb => cb.checked = false);
@@ -560,9 +571,6 @@
                 });
             });
         }
-        
-        // Call initialize filters after DOM is ready
-        initializeFilters();
     </script>
 </body>
 </html>
