@@ -1,13 +1,13 @@
 :root {
-    --purple-primary: #663399;
-    --purple-secondary: #8866bb;
-    --purple-light: #f0ebf5;
-    --purple-dark: #4d2673;
+    --purple-primary: #4B0082;
+    --purple-secondary: #6A0DAD;
+    --purple-light: #E6E6FA;
+    --purple-dark: #2E003E;
     --text-dark: #2d3436;
     --text-muted: #636e72;
     --white: #ffffff;
     --light-gray: #f8f9fa;
-    --shadow: rgba(102, 51, 153, 0.1);
+    --shadow: rgba(75, 0, 130, 0.1);
 }
 
 * {
@@ -471,7 +471,7 @@ body {
 
 .chat-input-container .form-control:focus {
     border-color: var(--purple-primary);
-    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+    box-shadow: 0 0 0 3px rgba(75, 0, 130, 0.1);
 }
 
 .chat-input-container .btn {
@@ -845,7 +845,7 @@ body {
 
 .highlight-item:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(102, 51, 153, 0.15);
+    box-shadow: 0 4px 15px rgba(75, 0, 130, 0.15);
 }
 
 .location-image img {
@@ -911,7 +911,7 @@ body {
 
 .service-detail-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 35px rgba(102, 51, 153, 0.15);
+    box-shadow: 0 8px 35px rgba(75, 0, 130, 0.15);
 }
 
 .service-icon-large {
@@ -923,7 +923,7 @@ body {
     align-items: center;
     justify-content: center;
     margin: 0 auto;
-    box-shadow: 0 8px 25px rgba(102, 51, 153, 0.3);
+    box-shadow: 0 8px 25px rgba(75, 0, 130, 0.3);
 }
 
 .service-icon-large i {
@@ -1054,7 +1054,7 @@ body {
 
 .cta-box {
     border-radius: 15px;
-    box-shadow: 0 15px 35px rgba(108, 92, 231, 0.3);
+    box-shadow: 0 15px 35px rgba(75, 0, 130, 0.3);
 }
 
 .services-reminder {
@@ -1183,14 +1183,14 @@ body {
 /* Focus States for Accessibility */
 .btn:focus,
 .nav-link:focus {
-    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.3);
+    box-shadow: 0 0 0 3px rgba(75, 0, 130, 0.3);
 }
 
 /* High Contrast Support */
 @media (prefers-contrast: high) {
     :root {
-        --purple-primary: #4c3db8;
-        --purple-dark: #3a2d8f;
+        --purple-primary: #4B0082;
+        --purple-dark: #2E003E;
         --text-dark: #000000;
     }
 }
@@ -1238,7 +1238,7 @@ body {
 
 .form-control:focus {
     border-color: var(--purple-primary) !important;
-    box-shadow: 0 0 0 0.2rem rgba(102, 51, 153, 0.25) !important;
+    box-shadow: 0 0 0 0.2rem rgba(75, 0, 130, 0.25) !important;
 }
 
 /* Blog collapsible styles */
@@ -1257,7 +1257,7 @@ body {
 }
 
 .blog-post-header-collapsible:hover {
-    background: #e8ddf0;
+    background: #ddd0e8;
 }
 
 .blog-post-content-collapsible {
