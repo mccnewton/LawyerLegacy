@@ -8,6 +8,14 @@ This is a professional law firm website for Sharon K. Lowry, an estate planning 
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes
+
+### Navigation Fix (July 25, 2025)
+- Fixed Contact menu navigation to go to top of Contact page instead of auto-scrolling to chatbot
+- Removed auto-focus on chatbot input when accessing Contact page directly through menu
+- Start Planning buttons on Services page still correctly link to chatbot section
+- Added toggleBlogPost function to fix JavaScript errors on Blog page
+
 ## System Architecture
 
 ### Frontend Architecture

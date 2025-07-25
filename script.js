@@ -490,11 +490,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         ];
 
-        // Enable chat input initially
+        // Enable chat input initially, but only focus if user came from services page with hash
         setTimeout(() => {
             chatInput.disabled = false;
             sendBtn.disabled = false;
-            chatInput.focus();
+            
+            // Only auto-focus if coming from services page with hash link
+            const referrer = document.referrer;
+            const hasHash = window.location.hash.includes('chat-messages');
+            
+            if (hasHash && referrer.includes('services.html')) {
+                chatInput.focus();
+            }
         }, 1000);
 
         // Handle enter key in chat input
