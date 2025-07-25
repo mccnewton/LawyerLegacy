@@ -140,8 +140,14 @@ async function sendConsultationNotification(consultationData) {
             `
         };
         
-        await transporter.sendMail(mailOptions);
+        const info = await transporter.sendMail(mailOptions);
         console.log('Consultation notification email sent successfully');
+        console.log('Email details:', {
+            from: mailOptions.from,
+            to: mailOptions.to,
+            subject: mailOptions.subject,
+            messageId: info.messageId
+        });
         return true;
     } catch (error) {
         console.error('Failed to send consultation notification email:', error);
