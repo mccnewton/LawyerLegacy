@@ -385,10 +385,10 @@ body {
 
 /* Call to Action Box */
 .cta-box {
-    background: var(--purple-light) !important;
-    border: 2px solid var(--purple-primary) !important;
+    background: linear-gradient(135deg, var(--purple-primary) 0%, var(--purple-dark) 100%) !important;
+    border: 2px solid var(--purple-dark) !important;
     border-radius: 15px !important;
-    box-shadow: 0 10px 30px rgba(75, 0, 130, 0.2) !important;
+    box-shadow: 0 10px 30px rgba(75, 0, 130, 0.3) !important;
 }
 
 .cta-box h3,
