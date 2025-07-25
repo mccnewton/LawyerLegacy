@@ -878,8 +878,8 @@ body {
 .services-hero {
     background: linear-gradient(135deg, var(--purple-primary) 0%, var(--purple-dark) 100%);
     padding: 120px 0 80px 0;
+    text-align: center;
     position: relative;
-    overflow: hidden;
 }
 
 
