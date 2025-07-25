@@ -874,13 +874,7 @@ body {
     }
 }
 
-/* Services Page Styling */
-.services-hero {
-    background: linear-gradient(135deg, var(--purple-primary) 0%, var(--purple-dark) 100%);
-    padding: 120px 0 80px 0;
-    text-align: center;
-    position: relative;
-}
+/* Services Page Styling - Now uses standard page-header class */
 
 
 
@@ -996,9 +990,7 @@ body {
         font-size: 2rem;
     }
     
-    .services-hero {
-        padding: 100px 0 60px 0;
-    }
+
 }
 
 /* Mobile responsiveness for chatbot */
@@ -1164,8 +1156,7 @@ body {
     }
     
     .hero-section,
-    .page-header,
-    .services-hero {
+    .page-header {
         background: none !important;
         color: black !important;
     }
