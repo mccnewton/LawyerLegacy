@@ -96,9 +96,19 @@
             margin-right: 0.5rem;
             transition: transform 0.3s ease;
         }
+        .faq-item.active .faq-question i {
+            transform: rotate(90deg);
+        }
         .faq-answer {
             line-height: 1.7;
             color: #555;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .faq-item.active {
+            background: linear-gradient(145deg, rgba(248, 249, 255, 0.8) 0%, rgba(255, 255, 255, 0.9) 100%);
+            border-left: 6px solid var(--purple-secondary);
         }
         .blog-post {
             border-bottom: 3px solid rgba(75, 0, 130, 0.1);
@@ -523,6 +533,38 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
+    <script>
+        // Ensure toggleFaq function is available globally
+        window.toggleFaq = function(element) {
+            const faqItem = element.parentElement;
+            const answer = faqItem.querySelector('.faq-answer');
+            const icon = element.querySelector('i');
+            
+            if (answer.style.display === 'none' || answer.style.display === '') {
+                answer.style.display = 'block';
+                icon.classList.remove('fa-chevron-right');
+                icon.classList.add('fa-chevron-down');
+                faqItem.classList.add('active');
+            } else {
+                answer.style.display = 'none';
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-right');
+                faqItem.classList.remove('active');
+            }
+        };
+        
+        // Make sure function is available after DOM loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Double-check all FAQ items are properly set up
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const answer = item.querySelector('.faq-answer');
+                if (answer && !answer.style.display) {
+                    answer.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
 
