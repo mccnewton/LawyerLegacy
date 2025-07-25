@@ -298,10 +298,24 @@
                                 <div class="mb-2">
                                     <input type="password" id="admin-password" class="form-control form-control-sm" placeholder="Password" required>
                                 </div>
-                                <div class="text-center">
+                                <div class="text-center mb-2">
                                     <button type="button" class="btn btn-primary btn-sm" onclick="adminLogin()">
                                         <i class="fas fa-sign-in-alt me-1"></i>Login
                                     </button>
+                                </div>
+                                <div class="text-center">
+                                    <small class="text-muted d-block mb-2">Or login with:</small>
+                                    <div class="oauth-buttons">
+                                        <a href="/auth/google" class="btn btn-outline-danger btn-sm me-1" title="Login with Google">
+                                            <i class="fab fa-google"></i>
+                                        </a>
+                                        <a href="/auth/facebook" class="btn btn-outline-primary btn-sm me-1" title="Login with Facebook">
+                                            <i class="fab fa-facebook-f"></i>
+                                        </a>
+                                        <a href="/auth/github" class="btn btn-outline-dark btn-sm" title="Login with GitHub">
+                                            <i class="fab fa-github"></i>
+                                        </a>
+                                    </div>
                                 </div>
                                 <div id="admin-login-message" class="mt-2 text-center small" style="display: none;"></div>
                             </div>
@@ -419,14 +433,73 @@
 
 
 
+        // Admin login function
+        async function adminLogin() {
+            const email = document.getElementById('admin-email').value;
+            const password = document.getElementById('admin-password').value;
+            const messageDiv = document.getElementById('admin-login-message');
+
+            if (!email || !password) {
+                messageDiv.textContent = 'Please enter both email and password';
+                messageDiv.style.display = 'block';
+                messageDiv.className = 'mt-2 text-center small text-danger';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: email, password: password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.href = '/admin';
+                } else {
+                    messageDiv.textContent = data.error || 'Invalid credentials';
+                    messageDiv.style.display = 'block';
+                    messageDiv.className = 'mt-2 text-center small text-danger';
+                }
+            } catch (error) {
+                messageDiv.textContent = 'Login failed. Please try again.';
+                messageDiv.style.display = 'block';
+                messageDiv.className = 'mt-2 text-center small text-danger';
+            }
+        }
+
         // Handle Enter key in login form
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('loginForm').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleLogin();
-                }
-            });
+            // Check for OAuth error in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('error') === 'oauth_failed') {
+                const messageDiv = document.getElementById('admin-login-message');
+                messageDiv.textContent = 'OAuth login failed. Please check your email authorization.';
+                messageDiv.style.display = 'block';
+                messageDiv.className = 'mt-2 text-center small text-danger';
+            }
+
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleLogin();
+                    }
+                });
+            }
+
+            // Handle Enter key for admin login
+            const adminForm = document.getElementById('admin-login-form');
+            if (adminForm) {
+                adminForm.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        adminLogin();
+                    }
+                });
+            }
         });
     </script>
 

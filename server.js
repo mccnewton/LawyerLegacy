@@ -4,6 +4,12 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const fs = require('fs');
 const { Pool } = require('pg');
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
+const GitHubStrategy = require('passport-github2').Strategy;
+const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcrypt');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -21,8 +27,12 @@ async function initializeDatabase() {
         await pool.query(`
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
-                username VARCHAR(50) UNIQUE NOT NULL,
-                password_hash VARCHAR(255) NOT NULL,
+                username VARCHAR(255) UNIQUE NOT NULL,
+                email VARCHAR(255) UNIQUE,
+                password_hash VARCHAR(255),
+                oauth_provider VARCHAR(50),
+                oauth_id VARCHAR(255),
+                display_name VARCHAR(255),
                 role VARCHAR(20) DEFAULT 'user',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
@@ -47,15 +57,14 @@ async function initializeDatabase() {
 
         // Insert authorized admin users if they don't exist
         const authorizedEmails = ['creageco@gmail.com', 'mccnewton@gmail.com'];
-        const bcrypt = require('bcrypt');
         
         for (const email of authorizedEmails) {
-            const userExists = await pool.query('SELECT id FROM users WHERE username = $1', [email]);
+            const userExists = await pool.query('SELECT id FROM users WHERE email = $1 OR username = $1', [email]);
             if (userExists.rows.length === 0) {
                 const hashedPassword = await bcrypt.hash('admin123', 10);
                 await pool.query(
-                    'INSERT INTO users (username, password_hash, role) VALUES ($1, $2, $3)',
-                    [email, hashedPassword, 'admin']
+                    'INSERT INTO users (username, email, password_hash, role) VALUES ($1, $2, $3, $4)',
+                    [email, email, hashedPassword, 'admin']
                 );
                 console.log(`Admin user created: ${email}/admin123`);
             }
@@ -66,6 +75,183 @@ async function initializeDatabase() {
         console.error('Database initialization error:', err);
     }
 }
+
+// Passport configuration
+passport.use(new LocalStrategy({
+    usernameField: 'email'
+}, async (email, password, done) => {
+    try {
+        const result = await pool.query('SELECT * FROM users WHERE email = $1 OR username = $1', [email]);
+        const user = result.rows[0];
+        
+        if (!user) {
+            return done(null, false, { message: 'User not found' });
+        }
+        
+        if (!user.password_hash) {
+            return done(null, false, { message: 'Please use OAuth login' });
+        }
+        
+        const isValid = await bcrypt.compare(password, user.password_hash);
+        if (!isValid) {
+            return done(null, false, { message: 'Invalid password' });
+        }
+        
+        return done(null, user);
+    } catch (error) {
+        return done(error);
+    }
+}));
+
+// Google OAuth Strategy
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID || 'dummy-client-id',
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'dummy-client-secret',
+    callbackURL: "/auth/google/callback"
+}, async (accessToken, refreshToken, profile, done) => {
+    try {
+        const email = profile.emails[0].value;
+        
+        // Check if user is authorized
+        const authorizedEmails = ['creageco@gmail.com', 'mccnewton@gmail.com'];
+        if (!authorizedEmails.includes(email)) {
+            return done(null, false, { message: 'Unauthorized email address' });
+        }
+        
+        // Check if user already exists
+        let result = await pool.query('SELECT * FROM users WHERE oauth_id = $1 AND oauth_provider = $2', [profile.id, 'google']);
+        let user = result.rows[0];
+        
+        if (!user) {
+            // Check by email
+            result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+            user = result.rows[0];
+            
+            if (!user) {
+                // Create new user
+                result = await pool.query(
+                    'INSERT INTO users (username, email, oauth_provider, oauth_id, display_name, role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+                    [email, email, 'google', profile.id, profile.displayName, 'admin']
+                );
+                user = result.rows[0];
+            } else {
+                // Update existing user with OAuth info
+                await pool.query(
+                    'UPDATE users SET oauth_provider = $1, oauth_id = $2, display_name = $3 WHERE id = $4',
+                    ['google', profile.id, profile.displayName, user.id]
+                );
+            }
+        }
+        
+        return done(null, user);
+    } catch (error) {
+        return done(error);
+    }
+}));
+
+// Facebook OAuth Strategy
+passport.use(new FacebookStrategy({
+    clientID: process.env.FACEBOOK_CLIENT_ID || 'dummy-client-id',
+    clientSecret: process.env.FACEBOOK_CLIENT_SECRET || 'dummy-client-secret',
+    callbackURL: "/auth/facebook/callback",
+    profileFields: ['id', 'emails', 'name']
+}, async (accessToken, refreshToken, profile, done) => {
+    try {
+        const email = profile.emails[0].value;
+        
+        // Check if user is authorized
+        const authorizedEmails = ['creageco@gmail.com', 'mccnewton@gmail.com'];
+        if (!authorizedEmails.includes(email)) {
+            return done(null, false, { message: 'Unauthorized email address' });
+        }
+        
+        // Similar logic as Google strategy
+        let result = await pool.query('SELECT * FROM users WHERE oauth_id = $1 AND oauth_provider = $2', [profile.id, 'facebook']);
+        let user = result.rows[0];
+        
+        if (!user) {
+            result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+            user = result.rows[0];
+            
+            if (!user) {
+                result = await pool.query(
+                    'INSERT INTO users (username, email, oauth_provider, oauth_id, display_name, role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+                    [email, email, 'facebook', profile.id, `${profile.name.givenName} ${profile.name.familyName}`, 'admin']
+                );
+                user = result.rows[0];
+            } else {
+                await pool.query(
+                    'UPDATE users SET oauth_provider = $1, oauth_id = $2, display_name = $3 WHERE id = $4',
+                    ['facebook', profile.id, `${profile.name.givenName} ${profile.name.familyName}`, user.id]
+                );
+            }
+        }
+        
+        return done(null, user);
+    } catch (error) {
+        return done(error);
+    }
+}));
+
+// GitHub OAuth Strategy
+passport.use(new GitHubStrategy({
+    clientID: process.env.GITHUB_CLIENT_ID || 'dummy-client-id',
+    clientSecret: process.env.GITHUB_CLIENT_SECRET || 'dummy-client-secret',
+    callbackURL: "/auth/github/callback"
+}, async (accessToken, refreshToken, profile, done) => {
+    try {
+        const email = profile.emails && profile.emails[0] ? profile.emails[0].value : null;
+        
+        if (!email) {
+            return done(null, false, { message: 'No email provided by GitHub' });
+        }
+        
+        // Check if user is authorized
+        const authorizedEmails = ['creageco@gmail.com', 'mccnewton@gmail.com'];
+        if (!authorizedEmails.includes(email)) {
+            return done(null, false, { message: 'Unauthorized email address' });
+        }
+        
+        // Similar logic as other strategies
+        let result = await pool.query('SELECT * FROM users WHERE oauth_id = $1 AND oauth_provider = $2', [profile.id, 'github']);
+        let user = result.rows[0];
+        
+        if (!user) {
+            result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+            user = result.rows[0];
+            
+            if (!user) {
+                result = await pool.query(
+                    'INSERT INTO users (username, email, oauth_provider, oauth_id, display_name, role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+                    [email, email, 'github', profile.id, profile.displayName || profile.username, 'admin']
+                );
+                user = result.rows[0];
+            } else {
+                await pool.query(
+                    'UPDATE users SET oauth_provider = $1, oauth_id = $2, display_name = $3 WHERE id = $4',
+                    ['github', profile.id, profile.displayName || profile.username, user.id]
+                );
+            }
+        }
+        
+        return done(null, user);
+    } catch (error) {
+        return done(error);
+    }
+}));
+
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+    try {
+        const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+        done(null, result.rows[0]);
+    } catch (error) {
+        done(error);
+    }
+});
 
 // Middleware
 app.use(express.json());
@@ -80,6 +266,9 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
 }));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Authentication middleware
 function requireAuth(req, res, next) {
@@ -140,6 +329,55 @@ app.post('/api/login', async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 });
+
+// OAuth Routes
+app.get('/auth/google', passport.authenticate('google', { 
+    scope: ['profile', 'email'] 
+}));
+
+app.get('/auth/google/callback', 
+    passport.authenticate('google', { failureRedirect: '/contact?error=oauth_failed' }),
+    (req, res) => {
+        req.session.user = {
+            id: req.user.id,
+            username: req.user.username,
+            role: req.user.role
+        };
+        res.redirect('/admin');
+    }
+);
+
+app.get('/auth/facebook', passport.authenticate('facebook', { 
+    scope: ['email'] 
+}));
+
+app.get('/auth/facebook/callback',
+    passport.authenticate('facebook', { failureRedirect: '/contact?error=oauth_failed' }),
+    (req, res) => {
+        req.session.user = {
+            id: req.user.id,
+            username: req.user.username,
+            role: req.user.role
+        };
+        res.redirect('/admin');
+    }
+);
+
+app.get('/auth/github', passport.authenticate('github', { 
+    scope: ['user:email'] 
+}));
+
+app.get('/auth/github/callback',
+    passport.authenticate('github', { failureRedirect: '/contact?error=oauth_failed' }),
+    (req, res) => {
+        req.session.user = {
+            id: req.user.id,
+            username: req.user.username,
+            role: req.user.role
+        };
+        res.redirect('/admin');
+    }
+);
 
 app.post('/api/logout', (req, res) => {
     req.session.destroy();
