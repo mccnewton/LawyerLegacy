@@ -287,67 +287,29 @@
         </div>
     </footer>
 
-    <!-- Floating Chatbot Bubble -->
-    <div class="chatbot-bubble" id="chatbot-bubble">
-        <button class="chatbot-trigger" id="chatbot-trigger">
+    <!-- Simple Floating Chatbot -->
+    <div class="floating-chatbot">
+        <button class="chat-bubble" id="chatBubble">
             <i class="fas fa-comments"></i>
         </button>
-    </div>
-
-    <!-- Floating Chatbot Window -->
-    <div class="chatbot-window" id="chatbot-window">
-        <div class="chatbot-header">
-            <h5 class="chatbot-title">Consultation Assistant</h5>
-            <button class="chatbot-close" id="chatbot-close">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="chatbot-body" id="chat-messages">
-            <!-- Chat messages will be inserted here -->
-        </div>
-        <div class="chatbot-footer">
-            <div class="chat-input-group">
-                <input type="text" class="chat-input" id="chat-input" placeholder="Type your message...">
-                <button class="chat-send-btn" id="send-btn">
-                    <i class="fas fa-paper-plane"></i>
+        
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <h5>Consultation Assistant</h5>
+                <button class="chat-close" id="chatClose">
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div id="consultation-summary" class="consultation-summary" style="display: none;">
-                <div id="summary-content"></div>
-                <button class="btn btn-success btn-sm mt-2" id="schedule-btn">Schedule Consultation</button>
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will appear here -->
             </div>
-        </div>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <!-- Floating Chatbot Bubble -->
-    <div class="chatbot-bubble" id="chatbot-bubble">
-        <button class="chatbot-trigger" id="chatbot-trigger">
-            <i class="fas fa-comments"></i>
-        </button>
-    </div>
-
-    <!-- Floating Chatbot Window -->
-    <div class="chatbot-window" id="chatbot-window">
-        <div class="chatbot-header">
-            <h5 class="chatbot-title">Consultation Assistant</h5>
-            <button class="chatbot-close" id="chatbot-close">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="chatbot-body" id="chat-messages">
-            <!-- Chat messages will be inserted here -->
-        </div>
-        <div class="chatbot-footer">
-            <div class="chat-input-group">
-                <input type="text" class="chat-input" id="chat-input" placeholder="Type your message...">
-                <button class="chat-send-btn" id="send-btn">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
-            <div id="consultation-summary" class="consultation-summary" style="display: none;">
-                <div id="summary-content"></div>
-                <button class="btn btn-success btn-sm mt-2" id="schedule-btn">Schedule Consultation</button>
+            <div class="chat-input-area">
+                <div class="chat-input-group">
+                    <input type="text" id="chatInput" placeholder="Type your message...">
+                    <button class="chat-send" id="chatSend">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -355,3 +317,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+

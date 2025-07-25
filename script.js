@@ -991,96 +991,126 @@ function toggleBlogPost(postId) {
     }
 }
 
-// Floating Chatbot functionality
+// Simple Floating Chatbot
 function initFloatingChatbot() {
-    const chatbotBubble = document.getElementById('chatbot-bubble');
-    const chatbotWindow = document.getElementById('chatbot-window');
-    const chatbotTrigger = document.getElementById('chatbot-trigger');
-    const chatbotClose = document.getElementById('chatbot-close');
+    const chatBubble = document.getElementById('chatBubble');
+    const chatWindow = document.getElementById('chatWindow');
+    const chatClose = document.getElementById('chatClose');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+    const chatMessages = document.getElementById('chatMessages');
     
-    if (!chatbotBubble || !chatbotWindow || !chatbotTrigger || !chatbotClose) {
-        return; // Elements not found
-    }
+    if (!chatBubble || !chatWindow) return;
     
-    // Show the bubble on all pages
-    chatbotBubble.classList.add('show');
+    let isOpen = false;
+    let currentStep = 0;
+    let userData = {};
     
-    // Handle bubble click to open chatbot
-    chatbotTrigger.addEventListener('click', function() {
-        chatbotWindow.classList.add('show');
-        chatbotBubble.style.display = 'none';
+    const questions = [
+        "Hello! I'm here to help you prepare for your consultation with Sharon K. Lowry. What's your name?",
+        "Nice to meet you, {name}! What's your email address?",
+        "Great! What's your phone number?",
+        "Which legal service interests you most? (Will & Estate Planning, Probate Administration, Powers of Attorney, etc.)",
+        "When would you like to schedule your consultation?",
+        "Please share any details about your situation that would help Sharon prepare."
+    ];
+    
+    function addMessage(text, isBot = true) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message ${isBot ? 'bot' : 'user'}`;
         
-        // Initialize floating chatbot conversation
-        initFloatingConsultationBot();
-    });
-    
-    // Handle close button
-    chatbotClose.addEventListener('click', function() {
-        chatbotWindow.classList.remove('show');
-        setTimeout(() => {
-            chatbotBubble.style.display = 'block';
-        }, 300);
-    });
-    
-    // Close chatbot when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!chatbotWindow.contains(e.target) && !chatbotTrigger.contains(e.target)) {
-            if (chatbotWindow.classList.contains('show')) {
-                chatbotClose.click();
-            }
-        }
-    });
-}
-
-// Initialize floating consultation bot
-function initFloatingConsultationBot() {
-    const chatInput = document.querySelector('#chatbot-window #chat-input');
-    const sendBtn = document.querySelector('#chatbot-window #send-btn');
-    const chatMessages = document.querySelector('#chatbot-window #chat-messages');
-    const summarySection = document.querySelector('#chatbot-window #consultation-summary');
-    const summaryContent = document.querySelector('#chatbot-window #summary-content');
-    
-    if (!chatInput || !sendBtn || !chatMessages) {
-        return; // Required elements not found
+        const bubbleDiv = document.createElement('div');
+        bubbleDiv.className = 'message-bubble';
+        bubbleDiv.textContent = text;
+        
+        messageDiv.appendChild(bubbleDiv);
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
     
-    // Clear any existing content
-    chatMessages.innerHTML = '';
-    
-    // Add initial bot message
-    addFloatingMessage("Hello! I'm here to help you prepare for your consultation with Sharon K. Lowry. May I start by getting your name?", 'bot');
-    
-    // Enable input
-    chatInput.disabled = false;
-    sendBtn.disabled = false;
-    
-    // Reset conversation state for floating chatbot
-    conversationState = {
-        step: 0,
-        data: {
-            name: '',
-            email: '',
-            phone: '',
-            serviceType: '',
-            timeline: '',
-            details: '',
-            urgency: ''
+    function askQuestion() {
+        if (currentStep < questions.length) {
+            let question = questions[currentStep];
+            
+            // Replace placeholders
+            Object.keys(userData).forEach(key => {
+                question = question.replace(`{${key}}`, userData[key]);
+            });
+            
+            setTimeout(() => addMessage(question), 500);
+        } else {
+            // Conversation complete
+            setTimeout(() => {
+                addMessage(`Thank you, ${userData.name}! I've gathered all the information Sharon needs. She'll review this before your consultation.`);
+                
+                setTimeout(() => {
+                    const emailSubject = `Consultation Request - ${userData.name}`;
+                    const emailBody = `Name: ${userData.name}\nEmail: ${userData.email}\nPhone: ${userData.phone}\nService: ${userData.service}\nTimeline: ${userData.timeline}\nDetails: ${userData.details}`;
+                    const mailtoLink = `mailto:sklowry@sklowrylaw.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+                    
+                    if (confirm('Would you like to send this consultation summary via email?')) {
+                        window.location.href = mailtoLink;
+                    }
+                }, 1000);
+            }, 500);
         }
-    };
+    }
     
-    // Add event listeners
-    chatInput.addEventListener('keypress', handleFloatingEnter);
-    sendBtn.addEventListener('click', handleFloatingResponse);
+    function handleResponse() {
+        const input = chatInput.value.trim();
+        if (!input) return;
+        
+        addMessage(input, false);
+        
+        // Store response
+        const fields = ['name', 'email', 'phone', 'service', 'timeline', 'details'];
+        if (currentStep < fields.length) {
+            userData[fields[currentStep]] = input;
+        }
+        
+        chatInput.value = '';
+        currentStep++;
+        askQuestion();
+    }
+    
+    // Event listeners
+    chatBubble.addEventListener('click', () => {
+        isOpen = !isOpen;
+        chatWindow.classList.toggle('active', isOpen);
+        
+        if (isOpen && currentStep === 0) {
+            // Start conversation
+            askQuestion();
+        }
+    });
+    
+    chatClose.addEventListener('click', () => {
+        isOpen = false;
+        chatWindow.classList.remove('active');
+    });
+    
+    chatSend.addEventListener('click', handleResponse);
+    
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleResponse();
+        }
+    });
+    
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+        if (isOpen && !chatWindow.contains(e.target) && !chatBubble.contains(e.target)) {
+            isOpen = false;
+            chatWindow.classList.remove('active');
+        }
+    });
 }
 
 // Function to open chatbot from external links (like Start Planning buttons)
 function openChatbot() {
-    const chatbotBubble = document.getElementById('chatbot-bubble');
-    const chatbotWindow = document.getElementById('chatbot-window');
-    const chatbotTrigger = document.getElementById('chatbot-trigger');
-    
-    if (chatbotTrigger && chatbotBubble && chatbotWindow) {
-        chatbotTrigger.click();
+    const chatBubble = document.getElementById('chatBubble');
+    if (chatBubble) {
+        chatBubble.click();
     }
 }
 
