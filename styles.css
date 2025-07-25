@@ -244,7 +244,7 @@ body {
 }
 
 .stars {
-    color: #ffd700;
+    color: var(--purple-primary);
     font-size: 1.2rem;
 }
 
@@ -501,7 +501,7 @@ body {
 }
 
 .responses-header {
-    background: linear-gradient(135deg, #636e72 0%, #2d3436 100%);
+    background: linear-gradient(135deg, var(--purple-primary) 0%, var(--purple-dark) 100%);
 }
 
 .responses-container {
@@ -550,7 +550,7 @@ body {
 }
 
 .delete-response {
-    background: #dc3545;
+    background: var(--purple-primary);
     color: white;
     border: none;
     border-radius: 50%;
@@ -567,7 +567,7 @@ body {
 }
 
 .delete-response:hover {
-    background: #c82333;
+    background: var(--purple-dark);
     transform: scale(1.1);
 }
 
