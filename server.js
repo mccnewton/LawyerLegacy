@@ -80,15 +80,13 @@ async function initializeDatabase() {
 
 // Email configuration
 const createEmailTransporter = () => {
-    // For development, use Ethereal Email (test account)
-    // For production, you would use a real email service like Gmail, SendGrid, etc.
-    return nodemailer.createTransporter({
+    return nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
         secure: false,
         auth: {
-            user: process.env.EMAIL_USER || 'your-email@gmail.com',
-            pass: process.env.EMAIL_PASSWORD || 'your-app-password'
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASSWORD
         }
     });
 };
