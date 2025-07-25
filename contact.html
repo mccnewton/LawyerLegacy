@@ -282,6 +282,35 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Admin Access Section -->
+            <div class="row mt-5">
+                <div class="col-lg-6 mx-auto">
+                    <div class="admin-access-card bg-light p-4 rounded border">
+                        <h4 class="text-primary text-center mb-3">
+                            <i class="fas fa-user-shield me-2"></i>Admin Access
+                        </h4>
+                        <div class="admin-access-section">
+                            <div id="admin-login-form" class="admin-login-form">
+                                <div class="mb-3">
+                                    <label for="admin-email" class="form-label small">Email</label>
+                                    <input type="email" id="admin-email" class="form-control" placeholder="Enter admin email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="admin-password" class="form-label small">Password</label>
+                                    <input type="password" id="admin-password" class="form-control" placeholder="Enter password" required>
+                                </div>
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-primary" onclick="adminLogin()">
+                                        <i class="fas fa-sign-in-alt me-2"></i>Login to Admin Panel
+                                    </button>
+                                </div>
+                                <div id="admin-login-message" class="mt-3 text-center" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -329,6 +358,77 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Admin Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" required>
+                        </div>
+                        <div id="loginError" class="alert alert-danger d-none"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="handleLogin()">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showLogin() {
+            const modal = new bootstrap.Modal(document.getElementById('loginModal'));
+            modal.show();
+        }
+
+        async function handleLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.href = '/admin';
+                } else {
+                    errorDiv.textContent = data.error || 'Invalid credentials';
+                    errorDiv.classList.remove('d-none');
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Login failed. Please try again.';
+                errorDiv.classList.remove('d-none');
+            }
+        }
+
+        // Handle Enter key in login form
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('loginForm').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleLogin();
+                }
+            });
+        });
+    </script>
 
     <script src="script.js"></script>
 </body>
