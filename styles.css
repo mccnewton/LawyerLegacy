@@ -174,6 +174,10 @@ body {
     border: 1px solid #f8f9fa;
     cursor: pointer;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 380px;
 }
 
 .service-card:hover {
@@ -223,6 +227,22 @@ body {
     color: var(--purple-primary);
     margin-bottom: 1rem;
     font-weight: 600;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.service-card p {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 0;
+}
+
+.service-card .service-learn-more {
+    margin-top: auto;
 }
 
 /* Testimonials */
