@@ -396,18 +396,7 @@ body {
     flex-shrink: 0;
 }
 
-/* Contact Page Service Buttons */
-.services-reminder .btn {
-    height: 120px !important;
-    min-height: 120px;
-}
 
-.services-reminder .btn span {
-    font-size: 0.85rem !important;
-    line-height: 1.2;
-    display: block;
-    text-align: center;
-}
 
 /* Contact Page Styles */
 .contact-content {
