@@ -10,6 +10,12 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### Navigation Update (August 7, 2025)
+- Renamed "Legal Services" to "Practice Areas" across all pages
+- Moved "Practice Areas" to second position in navigation (after Home, before About Me)
+- Updated navigation order: Home → Practice Areas → About Me → Blog & FAQ → Contact
+- Applied changes consistently across all website pages for uniform navigation experience
+
 ### Email Notification System Implementation (July 25, 2025)
 - Integrated automated email notifications for completed consultation forms
 - Added nodemailer dependency for professional email handling
