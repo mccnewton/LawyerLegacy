@@ -127,54 +127,69 @@
             <div class="row g-4 mb-5">
                 <!-- Phone -->
                 <div class="col-lg-4 col-md-6">
-                    <div class="contact-card text-center h-100 hover-lift">
+                    <div class="contact-card text-center h-100 hover-lift clickable-card" 
+                         onclick="copyToClipboard('(940) 765-4992', 'phone')" 
+                         title="Click to copy phone number to clipboard">
                         <div class="contact-icon mb-3">
                             <i class="fas fa-phone"></i>
                         </div>
                         <h4 class="h5 text-primary mb-3">Call Us</h4>
                         <p class="mb-3">
-                            <a href="tel:9407654992" class="text-decoration-none text-dark fw-bold">
+                            <span class="text-dark fw-bold copyable-text">
                                 (940) 765-4992
-                            </a>
+                            </span>
                         </p>
                         <p class="text-muted mb-0">
                             Call for your consultation
+                        </p>
+                        <p class="copy-hint text-muted small mb-0">
+                            <i class="fas fa-copy me-1"></i>Click to copy
                         </p>
                     </div>
                 </div>
 
                 <!-- Email -->
                 <div class="col-lg-4 col-md-6">
-                    <div class="contact-card text-center h-100 hover-lift">
+                    <div class="contact-card text-center h-100 hover-lift clickable-card" 
+                         onclick="copyToClipboard('sklowry@sklowrylaw.com', 'email')" 
+                         title="Click to copy email address to clipboard">
                         <div class="contact-icon mb-3">
                             <i class="fas fa-envelope"></i>
                         </div>
                         <h4 class="h5 text-primary mb-3">Email Us</h4>
                         <p class="mb-3">
-                            <a href="mailto:sklowry@sklowrylaw.com" class="text-decoration-none text-dark fw-bold">
+                            <span class="text-dark fw-bold copyable-text">
                                 sklowry@sklowrylaw.com
-                            </a>
+                            </span>
                         </p>
                         <p class="text-muted mb-0">
                             Send us your questions
+                        </p>
+                        <p class="copy-hint text-muted small mb-0">
+                            <i class="fas fa-copy me-1"></i>Click to copy
                         </p>
                     </div>
                 </div>
 
                 <!-- Address -->
                 <div class="col-lg-4 col-md-12">
-                    <div class="contact-card text-center h-100 hover-lift">
+                    <div class="contact-card text-center h-100 hover-lift clickable-card" 
+                         onclick="copyToClipboard('121 W. Hickory Street, Suite 105, Denton, TX 76201', 'address')" 
+                         title="Click to copy address to clipboard">
                         <div class="contact-icon mb-3">
                             <i class="fas fa-map-marker-alt"></i>
                         </div>
                         <h4 class="h5 text-primary mb-3">Visit Us</h4>
-                        <p class="mb-3 fw-bold">
+                        <p class="mb-3 fw-bold copyable-text">
                             121 W. Hickory Street<br>
                             Suite 105<br>
                             Denton, TX 76201
                         </p>
                         <p class="text-muted mb-0">
                             On the Courthouse Square
+                        </p>
+                        <p class="copy-hint text-muted small mb-0">
+                            <i class="fas fa-copy me-1"></i>Click to copy
                         </p>
                     </div>
                 </div>
@@ -656,6 +671,105 @@
                 messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         });
+
+        // Copy to clipboard functionality
+        async function copyToClipboard(text, type) {
+            try {
+                await navigator.clipboard.writeText(text);
+                
+                // Find the clicked card
+                const clickedCard = event.currentTarget;
+                
+                // Add success animation
+                clickedCard.classList.add('copy-success');
+                
+                // Update the copy hint temporarily
+                const copyHint = clickedCard.querySelector('.copy-hint');
+                const originalText = copyHint.innerHTML;
+                copyHint.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+                
+                // Reset after animation
+                setTimeout(() => {
+                    clickedCard.classList.remove('copy-success');
+                    copyHint.innerHTML = originalText;
+                }, 2000);
+                
+                // Show toast notification
+                showToast(`${getTypeName(type)} copied to clipboard!`, 'success');
+                
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    showToast(`${getTypeName(type)} copied to clipboard!`, 'success');
+                } catch (fallbackErr) {
+                    showToast('Unable to copy to clipboard', 'error');
+                }
+                
+                document.body.removeChild(textArea);
+            }
+        }
+
+        function getTypeName(type) {
+            switch(type) {
+                case 'phone': return 'Phone number';
+                case 'email': return 'Email address';
+                case 'address': return 'Address';
+                default: return 'Text';
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = `toast-notification toast-${type}`;
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                    ${message}
+                </div>
+            `;
+            
+            // Add styles
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#27ae60' : '#e74c3c'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 9999;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+                font-weight: 500;
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+                toast.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Remove after delay
+            setTimeout(() => {
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        document.body.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
     </script>
 </body>
 </html>

@@ -973,6 +973,57 @@ body {
     overflow: hidden;
 }
 
+/* ============================================
+   CLICKABLE CONTACT CARDS
+   ============================================ */
+.clickable-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.clickable-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(75, 0, 130, 0.2);
+    border-color: var(--purple-primary);
+}
+
+.clickable-card .copy-hint {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+.clickable-card:hover .copy-hint {
+    opacity: 1;
+}
+
+.copyable-text {
+    position: relative;
+}
+
+.clickable-card:hover .copyable-text {
+    color: var(--purple-primary) !important;
+}
+
+.clickable-card:active {
+    transform: translateY(-4px);
+}
+
+/* Copy success animation */
+.copy-success {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%) !important;
+    color: white !important;
+}
+
+.copy-success .contact-icon i {
+    color: white !important;
+}
+
 /* Footer */
 .footer {
     margin-top: auto;
