@@ -10,6 +10,14 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### Blog Post Enhancement (August 7, 2025)
+- Created individual blog post pages for each article with full content and professional layout
+- Implemented card-based navigation system on Resources page similar to Practice Areas homepage design
+- Added high-quality stock photos from Unsplash for each blog post topic
+- Created three dedicated blog post pages: Digital Estate Planning, Trust Basics, Family Inheritance Protection
+- Enhanced user experience with professional article layouts including featured images, metadata, and call-to-action sections
+- Maintained consistent purple theming and responsive design across all new pages
+
 ### Navigation Update (August 7, 2025)
 - Renamed "Legal Services" to "Practice Areas" across all pages
 - Renamed "Blog & FAQ" to "Resources" across all pages
