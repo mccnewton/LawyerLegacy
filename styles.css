@@ -1517,6 +1517,17 @@ body {
     color: var(--text-dark);
 }
 
+/* Footer styling */
+footer a {
+    color: var(--purple-primary) !important;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: var(--purple-dark) !important;
+    text-decoration: underline;
+}
+
 
 
 
