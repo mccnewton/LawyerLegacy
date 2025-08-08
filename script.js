@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initAnimations();
     initScrollEffects();
     initAccessibility();
+    initFormConditionalFields();
 
     
     // Navigation functionality
@@ -457,6 +458,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initContactForm();
     initAnalytics();
     initPerformanceOptimizations();
+    initFormConditionalFields();
     
     // Service worker registration (for future PWA features)
     if ('serviceWorker' in navigator) {
@@ -648,6 +650,74 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 100);
 });
 
+// Initialize conditional form fields for estate planning form
+function initFormConditionalFields() {
+    // Show/hide grandchildren details based on hasGrandchildren selection
+    const hasGrandchildrenSelect = document.getElementById('hasGrandchildren');
+    if (hasGrandchildrenSelect) {
+        hasGrandchildrenSelect.addEventListener('change', function() {
+            const grandchildrenDetails = document.getElementById('grandchildrenDetails');
+            if (this.value === 'yes') {
+                grandchildrenDetails.style.display = 'block';
+            } else {
+                grandchildrenDetails.style.display = 'none';
+            }
+        });
+    }
+
+    // Show/hide primary beneficiaries field based on spouse estate selection
+    const leaveEntireEstateToSpouseSelect = document.getElementById('leaveEntireEstateToSpouse');
+    if (leaveEntireEstateToSpouseSelect) {
+        leaveEntireEstateToSpouseSelect.addEventListener('change', function() {
+            const primaryBeneficiariesField = document.getElementById('primaryBeneficiariesField');
+            if (this.value === 'no') {
+                primaryBeneficiariesField.style.display = 'block';
+            } else {
+                primaryBeneficiariesField.style.display = 'none';
+            }
+        });
+    }
+
+    // Show/hide other arrangements field based on burial preference
+    const burialPreferenceSelect = document.getElementById('burialPreference');
+    if (burialPreferenceSelect) {
+        burialPreferenceSelect.addEventListener('change', function() {
+            const otherArrangementDetails = document.getElementById('otherArrangementDetails');
+            if (this.value === 'other') {
+                otherArrangementDetails.style.display = 'block';
+            } else {
+                otherArrangementDetails.style.display = 'none';
+            }
+        });
+    }
+
+    // Show/hide pet care details based on hasPets selection
+    const hasPetsSelect = document.getElementById('hasPets');
+    if (hasPetsSelect) {
+        hasPetsSelect.addEventListener('change', function() {
+            const petCareDetails = document.getElementById('petCareDetails');
+            if (this.value === 'yes') {
+                petCareDetails.style.display = 'block';
+            } else {
+                petCareDetails.style.display = 'none';
+            }
+        });
+    }
+
+    // Show/hide legal proceedings details based on legalProceedings selection
+    const legalProceedingsSelect = document.getElementById('legalProceedings');
+    if (legalProceedingsSelect) {
+        legalProceedingsSelect.addEventListener('change', function() {
+            const legalProceedingsDetails = document.getElementById('legalProceedingsDetails');
+            if (this.value === 'yes') {
+                legalProceedingsDetails.style.display = 'block';
+            } else {
+                legalProceedingsDetails.style.display = 'none';
+            }
+        });
+    }
+}
+
 // Export functions for potential testing
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
@@ -658,7 +728,8 @@ if (typeof module !== 'undefined' && module.exports) {
         showSection,
         adminLogin,
         handleServiceForm,
-        showToast
+        showToast,
+        initFormConditionalFields
     };
 }
 

@@ -1425,6 +1425,18 @@ body {
     border-radius: 8px;
 }
 
+.consultation-form .section-header {
+    border-bottom: 2px solid var(--purple-primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.consultation-form .section-header h5 {
+    color: var(--purple-primary);
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
 .consultation-form .form-label {
     font-weight: 600;
     color: var(--text-dark);

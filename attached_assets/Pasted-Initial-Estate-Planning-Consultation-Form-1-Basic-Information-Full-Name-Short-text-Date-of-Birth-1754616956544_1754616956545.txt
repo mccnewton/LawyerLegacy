@@ -1,0 +1,54 @@
+Initial Estate Planning Consultation Form
+1. Basic Information
+Full Name (Short text)
+
+Date of Birth (Date picker)
+
+Phone Number (Phone)
+
+Email Address (Email)
+
+Home City & State (Short text — no full street address needed yet)
+
+Marital Status (Dropdown: Single / Married / Divorced / Widowed / Domestic Partnership)
+
+Spouse/Partner’s Full Name (Short text, optional)
+
+Spouse/Partner’s Date of Birth (Date picker, optional)
+
+2. Family Information
+List your children and their birthdates (Repeating group: Name + Date picker)
+
+Do you or your spouse have children from a prior relationship? (Yes/No)
+
+Do you have any grandchildren? (Yes/No — if Yes, names & birthdates)
+
+3. Key Decision Makers
+If you have minor children, who would you want to name as guardian? (Short text)
+
+Who would you want to serve as executor of your estate? (Short text)
+
+Who would you want as your Financial Power of Attorney? (Short text)
+
+Who would you want as your Medical Power of Attorney? (Short text)
+
+4. Beneficiaries
+If you are married, do you intend to leave your entire estate to your spouse if they survive you? (Yes/No)
+
+If not, who would be your primary beneficiaries? (Repeating group: Name + Relationship)
+
+Do you have any specific items or property you already know you’d like to leave to someone? (Paragraph — optional)
+
+5. Medical & End-of-Life Preferences (broad strokes only — detailed choices can come later)
+If you were terminally ill with no chance of recovery, would you want life-sustaining treatment continued? (Yes/No/Unsure)
+
+Do you wish to be an organ donor? (Yes/No/Let agent decide)
+
+Do you prefer burial, cremation, or other arrangements? (Dropdown: Burial / Cremation / Other – please specify)
+
+6. Additional Information
+Do you have pets that would need care if you became incapacitated or passed away? (Yes/No + If Yes, describe)
+
+Are you currently involved in any legal proceedings? (Yes/No + If Yes, describe)
+
+How did you hear about our firm? (Dropdown: Newspaper / Online search / Referral / Other)
