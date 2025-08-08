@@ -96,14 +96,18 @@ async function sendConsultationNotification(consultationData) {
     try {
         const transporter = createEmailTransporter();
         
+        // Determine form type for subject line
+        const formType = getFormTypeDescription(consultationData.legal_service || consultationData.serviceType);
+        const subjectLine = `New ${formType} Request - Sharon K. Lowry Law`;
+        
         const mailOptions = {
             from: process.env.EMAIL_USER || 'noreply@sharonlowrylaw.com',
             to: process.env.NOTIFICATION_EMAIL || 'creageco@gmail.com', // Default to admin email
-            subject: 'New Consultation Request - Sharon K. Lowry Law',
+            subject: subjectLine,
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                     <h2 style="color: #4B0082; border-bottom: 2px solid #4B0082; padding-bottom: 10px;">
-                        New Consultation Request
+                        New ${formType} Request
                     </h2>
                     
                     <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -111,7 +115,8 @@ async function sendConsultationNotification(consultationData) {
                         <p><strong>Name:</strong> ${consultationData.name}</p>
                         <p><strong>Email:</strong> ${consultationData.email}</p>
                         <p><strong>Phone:</strong> ${consultationData.phone || 'Not provided'}</p>
-                        <p><strong>Legal Service:</strong> ${consultationData.legal_service || 'Not specified'}</p>
+                        <p><strong>Service Type:</strong> ${consultationData.legal_service || consultationData.serviceType || 'Not specified'}</p>
+                        <p><strong>Form Source:</strong> ${formType}</p>
                     </div>
                     
                     <div style="background-color: #ffffff; padding: 20px; border-left: 4px solid #4B0082; margin: 20px 0;">
@@ -153,6 +158,29 @@ async function sendConsultationNotification(consultationData) {
         console.error('Failed to send consultation notification email:', error);
         return false;
     }
+}
+
+// Helper function to determine form type description
+function getFormTypeDescription(serviceType) {
+    if (!serviceType) return 'General Contact';
+    
+    const formTypeMap = {
+        'Wills & Estate Planning': 'Wills & Estate Planning',
+        'Probate Administration': 'Probate Administration', 
+        'Applications for Heirship': 'Heirship Application',
+        'Powers of Attorney': 'Powers of Attorney',
+        'Guardianship Applications': 'Guardianship Application',
+        'Small Estate Affidavits': 'Small Estate Affidavit',
+        'General Consultation': 'General Contact',
+        'Estate Planning': 'Wills & Estate Planning',
+        'Probate': 'Probate Administration',
+        'Heirship': 'Heirship Application',
+        'Power of Attorney': 'Powers of Attorney',
+        'Guardianship': 'Guardianship Application',
+        'Small Estate': 'Small Estate Affidavit'
+    };
+    
+    return formTypeMap[serviceType] || 'General Contact';
 }
 
 // Passport configuration
@@ -673,20 +701,70 @@ app.delete('/api/consultations/:id', requireAuth, async (req, res) => {
     }
 });
 
-// New consultation request API endpoints
+// New consultation request API endpoints (both singular and plural for compatibility)
 app.post('/api/consultation-request', async (req, res) => {
+    await handleConsultationRequest(req, res);
+});
+
+app.post('/api/consultation-requests', async (req, res) => {
+    await handleConsultationRequest(req, res);
+});
+
+// Shared consultation request handler
+async function handleConsultationRequest(req, res) {
     try {
-        const { name, email, phone, legal_service, message } = req.body;
+        const { 
+            name, email, phone, 
+            legal_service, legalService, serviceType, 
+            message, goals, questions, situation, needs, urgency,
+            maritalStatus, hasChildren, primaryAssets, relationship,
+            deceasedName, dateOfDeath, knownHeirs, assets, documents,
+            ageRange, agents, specialInstructions, personName,
+            estateValue, hasWill, daysSinceDeath, heirAgreement,
+            guardianshipType
+        } = req.body;
+        
+        // Determine service type from various possible fields
+        const finalServiceType = serviceType || legalService || legal_service || 'General Consultation';
         
         // Validate required fields
-        if (!name || !email || !legal_service) {
-            return res.status(400).json({ error: 'Name, email, and legal service are required' });
+        if (!name || !email) {
+            return res.status(400).json({ error: 'Name and email are required' });
         }
+        
+        // Combine all message-like fields into a comprehensive message
+        const messageFields = [];
+        if (message) messageFields.push(`Message: ${message}`);
+        if (goals) messageFields.push(`Goals: ${goals}`);
+        if (questions) messageFields.push(`Questions: ${questions}`);
+        if (situation) messageFields.push(`Situation: ${situation}`);
+        if (needs) messageFields.push(`Needs: ${needs}`);
+        if (urgency) messageFields.push(`Urgency: ${urgency}`);
+        if (maritalStatus) messageFields.push(`Marital Status: ${maritalStatus}`);
+        if (hasChildren) messageFields.push(`Has Children: ${hasChildren}`);
+        if (primaryAssets) messageFields.push(`Primary Assets: ${primaryAssets}`);
+        if (relationship) messageFields.push(`Relationship: ${relationship}`);
+        if (deceasedName) messageFields.push(`Deceased Name: ${deceasedName}`);
+        if (dateOfDeath) messageFields.push(`Date of Death: ${dateOfDeath}`);
+        if (knownHeirs) messageFields.push(`Known Heirs: ${knownHeirs}`);
+        if (assets) messageFields.push(`Assets: ${assets}`);
+        if (documents) messageFields.push(`Documents Needed: ${documents}`);
+        if (ageRange) messageFields.push(`Age Range: ${ageRange}`);
+        if (agents) messageFields.push(`Proposed Agents: ${agents}`);
+        if (specialInstructions) messageFields.push(`Special Instructions: ${specialInstructions}`);
+        if (personName) messageFields.push(`Person Name: ${personName}`);
+        if (estateValue) messageFields.push(`Estate Value: ${estateValue}`);
+        if (hasWill) messageFields.push(`Has Will: ${hasWill}`);
+        if (daysSinceDeath) messageFields.push(`Days Since Death: ${daysSinceDeath}`);
+        if (heirAgreement) messageFields.push(`Heir Agreement: ${heirAgreement}`);
+        if (guardianshipType) messageFields.push(`Guardianship Type: ${guardianshipType}`);
+        
+        const combinedMessage = messageFields.length > 0 ? messageFields.join('\n\n') : 'No additional details provided';
         
         // Insert consultation request into database
         const result = await pool.query(
             'INSERT INTO consultation_requests (name, email, phone, legal_service, message, status, created_at) VALUES ($1, $2, $3, $4, $5, $6, NOW()) RETURNING *',
-            [name, email, phone || null, legal_service, message || null, 'unread']
+            [name, email, phone || null, finalServiceType, combinedMessage, 'unread']
         );
         
         const consultationData = result.rows[0];
@@ -698,14 +776,14 @@ app.post('/api/consultation-request', async (req, res) => {
         
         res.json({ 
             success: true, 
-            message: 'Consultation request submitted successfully',
+            message: 'Request submitted successfully',
             request_id: consultationData.id
         });
     } catch (error) {
         console.error('Error submitting consultation request:', error);
-        res.status(500).json({ error: 'Failed to submit consultation request' });
+        res.status(500).json({ error: 'Failed to submit request' });
     }
-});
+}
 
 // API endpoint to get consultation requests (admin only)
 app.get('/api/consultation-requests', requireAuth, async (req, res) => {
