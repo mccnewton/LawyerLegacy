@@ -531,6 +531,123 @@ function showAdminMessage(message, type) {
 
 
 
+// Service-specific form handlers
+const handleServiceForm = async (formId, serviceType) => {
+    const form = document.getElementById(formId);
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        // Disable submit button and show loading
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
+        
+        try {
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            
+            // Add service type to data
+            data.serviceType = serviceType;
+            data.legalService = serviceType; // For compatibility with existing backend
+            
+            // Handle checkboxes for Powers of Attorney form
+            if (formId === 'powerAttorneyForm') {
+                const documents = [];
+                form.querySelectorAll('input[name="documents"]:checked').forEach(checkbox => {
+                    documents.push(checkbox.value);
+                });
+                data.documents = documents.join(', ');
+            }
+            
+            const response = await fetch('/api/consultation-requests', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to submit request');
+            }
+            
+            // Show success message with toast notification
+            showToast(`${serviceType} request submitted successfully!`, 'success');
+            
+            // Reset form
+            form.reset();
+        } catch (error) {
+            console.error(`Error submitting ${serviceType} request:`, error);
+            showToast('Failed to submit request. Please try again.', 'error');
+        } finally {
+            // Re-enable submit button
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    });
+};
+
+// Toast notification function
+function showToast(message, type) {
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast-notification ${type}`;
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? 'var(--purple-primary)' : '#dc3545'};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 9999;
+        font-weight: 500;
+        max-width: 350px;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+    `;
+    
+    toast.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Animate in
+    setTimeout(() => {
+        toast.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remove after 5 seconds
+    setTimeout(() => {
+        toast.style.transform = 'translateX(400px)';
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }, 5000);
+}
+
+// Initialize service-specific forms when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait a bit for the DOM to be fully ready
+    setTimeout(() => {
+        handleServiceForm('willsEstateForm', 'Wills & Estate Planning');
+        handleServiceForm('probateForm', 'Probate Administration');
+        handleServiceForm('heirshipForm', 'Applications for Heirship');
+        handleServiceForm('powerAttorneyForm', 'Powers of Attorney');
+        handleServiceForm('guardianshipForm', 'Guardianship Applications');
+        handleServiceForm('smallEstateForm', 'Small Estate Affidavits');
+    }, 100);
+});
+
 // Export functions for potential testing
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
@@ -539,7 +656,9 @@ if (typeof module !== 'undefined' && module.exports) {
         toggleBlogPost,
         toggleFaq,
         showSection,
-        adminLogin
+        adminLogin,
+        handleServiceForm,
+        showToast
     };
 }
 
