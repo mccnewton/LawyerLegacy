@@ -716,6 +716,37 @@ function initFormConditionalFields() {
             }
         });
     }
+
+    // Probate form conditional fields
+    // Show/hide co-applicant details
+    const hasCoApplicant = document.getElementById('hasCoApplicant');
+    const coApplicantDetails = document.getElementById('coApplicantDetails');
+    
+    if (hasCoApplicant && coApplicantDetails) {
+        hasCoApplicant.addEventListener('change', function() {
+            if (this.value === 'yes') {
+                coApplicantDetails.style.display = 'block';
+            } else {
+                coApplicantDetails.style.display = 'none';
+                document.getElementById('coApplicantInfo').value = '';
+            }
+        });
+    }
+    
+    // Show/hide dispute details
+    const estateDisputes = document.getElementById('estateDisputes');
+    const disputeDetails = document.getElementById('disputeDetails');
+    
+    if (estateDisputes && disputeDetails) {
+        estateDisputes.addEventListener('change', function() {
+            if (this.value === 'yes') {
+                disputeDetails.style.display = 'block';
+            } else {
+                disputeDetails.style.display = 'none';
+                document.getElementById('disputeDescription').value = '';
+            }
+        });
+    }
 }
 
 // Export functions for potential testing
