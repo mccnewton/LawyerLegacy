@@ -844,15 +844,17 @@ body {
 .service-benefits li {
     padding: 0.3rem 0;
     position: relative;
-    padding-left: 1.5rem;
+    padding-left: 2rem;
 }
 
 .service-benefits li::before {
     content: '→';
     position: absolute;
     left: 0;
+    top: 0.3rem;
     color: var(--purple-primary);
     font-weight: bold;
+    width: 1.5rem;
 }
 
 
@@ -1403,16 +1405,64 @@ body {
     color: white;
 }
 
+.service-detail-card .service-features,
+.service-detail-card .service-benefits {
+    list-style: none;
+    padding: 0;
+}
+
+.service-detail-card .service-features li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.service-detail-card .service-benefits li {
+    padding: 0.5rem 0 0.5rem 2rem;
+    border-bottom: 1px solid #f8f9fa;
+    position: relative;
+}
+
+.service-detail-card .service-benefits li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    color: var(--purple-primary);
+    font-weight: bold;
+    width: 1.5rem;
+}
+
+.service-detail-card .service-features li:last-child,
+.service-detail-card .service-benefits li:last-child {
+    border-bottom: none;
+}
+
+/* Individual service page styling - override for proper spacing */
 .service-features,
 .service-benefits {
     list-style: none;
     padding: 0;
 }
 
-.service-features li,
-.service-benefits li {
+.service-features li {
     padding: 0.5rem 0;
     border-bottom: 1px solid #f8f9fa;
+}
+
+.service-benefits li {
+    padding: 0.5rem 0 0.5rem 2rem;
+    border-bottom: 1px solid #f8f9fa;
+    position: relative;
+}
+
+.service-benefits li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    color: var(--purple-primary);
+    font-weight: bold;
+    width: 1.5rem;
 }
 
 .service-features li:last-child,
