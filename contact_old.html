@@ -422,6 +422,114 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
+
+
+    <script>
+        function showLogin() {
+            const modal = new bootstrap.Modal(document.getElementById('loginModal'));
+            modal.show();
+        }
+
+        async function handleLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.href = '/admin';
+                } else {
+                    errorDiv.textContent = data.error || 'Invalid credentials';
+                    errorDiv.classList.remove('d-none');
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Login failed. Please try again.';
+                errorDiv.classList.remove('d-none');
+            }
+        }
+
+
+
+
+
+        // Admin login function
+        async function adminLogin() {
+            const email = document.getElementById('admin-email').value;
+            const password = document.getElementById('admin-password').value;
+            const messageDiv = document.getElementById('admin-login-message');
+
+            if (!email || !password) {
+                messageDiv.textContent = 'Please enter both email and password';
+                messageDiv.style.display = 'block';
+                messageDiv.className = 'mt-2 text-center small text-danger';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: email, password: password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.href = '/admin';
+                } else {
+                    messageDiv.textContent = data.error || 'Invalid credentials';
+                    messageDiv.style.display = 'block';
+                    messageDiv.className = 'mt-2 text-center small text-danger';
+                }
+            } catch (error) {
+                messageDiv.textContent = 'Login failed. Please try again.';
+                messageDiv.style.display = 'block';
+                messageDiv.className = 'mt-2 text-center small text-danger';
+            }
+        }
+
+        // Handle Enter key in login form
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for OAuth error in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('error') === 'oauth_failed') {
+                const messageDiv = document.getElementById('admin-login-message');
+                messageDiv.textContent = 'OAuth login failed. Please check your email authorization.';
+                messageDiv.style.display = 'block';
+                messageDiv.className = 'mt-2 text-center small text-danger';
+            }
+
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleLogin();
+                    }
+                });
+            }
+
+            // Handle Enter key for admin login
+            const adminForm = document.getElementById('admin-login-form');
+            if (adminForm) {
+                adminForm.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        adminLogin();
+                    }
+                });
+            }
+        });
+    </script>
+
     <script src="script.js"></script>
     <script>
         // Consultation Form Handler
@@ -515,7 +623,7 @@
                     document.execCommand('copy');
                     showToast(`${getTypeName(type)} copied to clipboard!`, 'success');
                 } catch (fallbackErr) {
-                    showToast('Failed to copy to clipboard', 'error');
+                    showToast('Unable to copy to clipboard', 'error');
                 }
                 
                 document.body.removeChild(textArea);
@@ -531,9 +639,18 @@
             }
         }
 
-        function showToast(message, type = 'success') {
+        function showToast(message, type = 'info') {
+            // Create toast element
             const toast = document.createElement('div');
-            toast.textContent = message;
+            toast.className = `toast-notification toast-${type}`;
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                    ${message}
+                </div>
+            `;
+            
+            // Add styles
             toast.style.cssText = `
                 position: fixed;
                 top: 20px;
@@ -569,6 +686,3 @@
     </script>
 </body>
 </html>
-
-
-
