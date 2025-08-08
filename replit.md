@@ -12,10 +12,10 @@ Preferred communication style: Simple, everyday language.
 
 ### Enhanced Testimonials Section with Authentic Client Reviews (August 8, 2025)
 - Researched and added 6 authentic client testimonials from Avvo and Lawyer.com review platforms
-- Expanded testimonials section from 3 to 6 real client reviews with verified names and contexts
-- Added testimonial from fellow attorney (DC McNair) highlighting professional peer recognition
+- Expanded testimonials section from 3 to 6 real client reviews with anonymous attribution
+- Added testimonial from fellow attorney highlighting professional peer recognition
 - Included diverse client types: probate clients, estate planning clients, family estate planning
-- Enhanced testimonial display with client names and service categories for better credibility
+- Removed client names for privacy while maintaining service category descriptions
 - Maintained 5-star rating displays across all testimonials reflecting Sharon's excellent track record
 - Added second row of testimonials to showcase broader client satisfaction and professional reputation
 
