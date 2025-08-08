@@ -10,6 +10,12 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### Streamlined Contact Form Implementation (August 8, 2025)
+- Removed "Legal Service Needed" dropdown from general contact form
+- Simplified contact form to focus on general inquiries and consultation requests
+- Each specific service now has its own dedicated form page with tailored questions
+- Clean separation between general contact and service-specific consultation forms
+
 ### Direct Service Navigation Implementation (August 8, 2025)
 - Updated home page service cards to link directly to individual service form pages
 - Created streamlined user journey: Home → Service Details → Action Form
