@@ -38,6 +38,15 @@ Preferred communication style: Simple, everyday language.
 - Applied changes consistently across all website pages for uniform navigation experience
 - Updated page titles and headings to match new navigation terminology
 
+### Enhanced Email System with Form-Specific Identification (August 8, 2025)
+- Updated email notifications to include specific form types in subject lines
+- Enhanced message formatting with each data field on separate lines for better readability
+- Added comprehensive form field handling for all six service types
+- Subject lines now identify exact form source (e.g., "New Wills & Estate Planning Request")
+- Form source clearly displayed in email body with "Form Source" field
+- HTML line break formatting for proper display of multi-line form responses
+- Backward compatibility maintained for existing general contact form
+
 ### Email Notification System Implementation (July 25, 2025)
 - Integrated automated email notifications for completed consultation forms
 - Added nodemailer dependency for professional email handling

@@ -121,7 +121,7 @@ async function sendConsultationNotification(consultationData) {
                     
                     <div style="background-color: #ffffff; padding: 20px; border-left: 4px solid #4B0082; margin: 20px 0;">
                         <h3 style="color: #333; margin-top: 0;">Message Details</h3>
-                        <p style="line-height: 1.6;">${consultationData.message || 'No details provided'}</p>
+                        <div style="line-height: 1.6; white-space: pre-line;">${(consultationData.message || 'No details provided').replace(/\n/g, '<br>')}</div>
                     </div>
                     
                     <div style="background-color: #e9ecef; padding: 15px; border-radius: 8px; margin: 20px 0;">
@@ -732,32 +732,32 @@ async function handleConsultationRequest(req, res) {
             return res.status(400).json({ error: 'Name and email are required' });
         }
         
-        // Combine all message-like fields into a comprehensive message
+        // Combine all message-like fields into a comprehensive message with proper line breaks
         const messageFields = [];
-        if (message) messageFields.push(`Message: ${message}`);
-        if (goals) messageFields.push(`Goals: ${goals}`);
-        if (questions) messageFields.push(`Questions: ${questions}`);
-        if (situation) messageFields.push(`Situation: ${situation}`);
-        if (needs) messageFields.push(`Needs: ${needs}`);
-        if (urgency) messageFields.push(`Urgency: ${urgency}`);
-        if (maritalStatus) messageFields.push(`Marital Status: ${maritalStatus}`);
-        if (hasChildren) messageFields.push(`Has Children: ${hasChildren}`);
-        if (primaryAssets) messageFields.push(`Primary Assets: ${primaryAssets}`);
-        if (relationship) messageFields.push(`Relationship: ${relationship}`);
-        if (deceasedName) messageFields.push(`Deceased Name: ${deceasedName}`);
-        if (dateOfDeath) messageFields.push(`Date of Death: ${dateOfDeath}`);
-        if (knownHeirs) messageFields.push(`Known Heirs: ${knownHeirs}`);
-        if (assets) messageFields.push(`Assets: ${assets}`);
-        if (documents) messageFields.push(`Documents Needed: ${documents}`);
-        if (ageRange) messageFields.push(`Age Range: ${ageRange}`);
-        if (agents) messageFields.push(`Proposed Agents: ${agents}`);
-        if (specialInstructions) messageFields.push(`Special Instructions: ${specialInstructions}`);
-        if (personName) messageFields.push(`Person Name: ${personName}`);
-        if (estateValue) messageFields.push(`Estate Value: ${estateValue}`);
-        if (hasWill) messageFields.push(`Has Will: ${hasWill}`);
-        if (daysSinceDeath) messageFields.push(`Days Since Death: ${daysSinceDeath}`);
-        if (heirAgreement) messageFields.push(`Heir Agreement: ${heirAgreement}`);
-        if (guardianshipType) messageFields.push(`Guardianship Type: ${guardianshipType}`);
+        if (message) messageFields.push(`Message:\n${message}`);
+        if (goals) messageFields.push(`Goals:\n${goals}`);
+        if (questions) messageFields.push(`Questions:\n${questions}`);
+        if (situation) messageFields.push(`Situation:\n${situation}`);
+        if (needs) messageFields.push(`Needs:\n${needs}`);
+        if (urgency) messageFields.push(`Urgency:\n${urgency}`);
+        if (maritalStatus) messageFields.push(`Marital Status:\n${maritalStatus}`);
+        if (hasChildren) messageFields.push(`Has Children:\n${hasChildren}`);
+        if (primaryAssets) messageFields.push(`Primary Assets:\n${primaryAssets}`);
+        if (relationship) messageFields.push(`Relationship:\n${relationship}`);
+        if (deceasedName) messageFields.push(`Deceased Name:\n${deceasedName}`);
+        if (dateOfDeath) messageFields.push(`Date of Death:\n${dateOfDeath}`);
+        if (knownHeirs) messageFields.push(`Known Heirs:\n${knownHeirs}`);
+        if (assets) messageFields.push(`Assets:\n${assets}`);
+        if (documents) messageFields.push(`Documents Needed:\n${documents}`);
+        if (ageRange) messageFields.push(`Age Range:\n${ageRange}`);
+        if (agents) messageFields.push(`Proposed Agents:\n${agents}`);
+        if (specialInstructions) messageFields.push(`Special Instructions:\n${specialInstructions}`);
+        if (personName) messageFields.push(`Person Name:\n${personName}`);
+        if (estateValue) messageFields.push(`Estate Value:\n${estateValue}`);
+        if (hasWill) messageFields.push(`Has Will:\n${hasWill}`);
+        if (daysSinceDeath) messageFields.push(`Days Since Death:\n${daysSinceDeath}`);
+        if (heirAgreement) messageFields.push(`Heir Agreement:\n${heirAgreement}`);
+        if (guardianshipType) messageFields.push(`Guardianship Type:\n${guardianshipType}`);
         
         const combinedMessage = messageFields.length > 0 ? messageFields.join('\n\n') : 'No additional details provided';
         
