@@ -644,7 +644,7 @@ document.addEventListener('DOMContentLoaded', function() {
         handleServiceForm('willsEstateForm', 'Wills & Estate Planning');
         handleServiceForm('probateForm', 'Probate');
         handleServiceForm('heirshipForm', 'Applications for Heirship');
-        handleServiceForm('powerAttorneyForm', 'Financial Powers of Attorney and Advance Directives');
+        handleServiceForm('powerAttorneyForm', 'Financial Powers of Attorney');
         handleServiceForm('guardianshipForm', 'Medical Powers of Attorney and Advance Directives');
         handleServiceForm('smallEstateForm', 'Small Estate Affidavits');
     }, 100);

@@ -142,7 +142,7 @@ function getFormTypeDescription(serviceType) {
         'Wills & Estate Planning': 'Wills & Estate Planning',
         'Probate Administration': 'Probate', 
         'Applications for Heirship': 'Heirship Application',
-        'Powers of Attorney': 'Financial Powers of Attorney and Advance Directives',
+        'Powers of Attorney': 'Financial Powers of Attorney',
         'Medical Powers of Attorney and Advance Directives': 'Medical Powers of Attorney and Advance Directives',
         'Small Estate Affidavits': 'Small Estate Affidavit',
         'General Consultation': 'General Contact',
