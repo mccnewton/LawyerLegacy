@@ -1,4 +1,4 @@
-// Main JavaScript file for Sharon K. Lowry Law website
+// Main JavaScript file for The Law Office of Sharon K. Lowry website
 
 // Global functions that need to be accessible to onclick handlers
 function showSection(sectionName) {
@@ -469,7 +469,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Console message for developers
-    console.log('Sharon K. Lowry Law website loaded successfully');
+    console.log('The Law Office of Sharon K. Lowry website loaded successfully');
     console.log('For technical support, contact the web development team');
 });
 
@@ -642,10 +642,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Wait a bit for the DOM to be fully ready
     setTimeout(() => {
         handleServiceForm('willsEstateForm', 'Wills & Estate Planning');
-        handleServiceForm('probateForm', 'Probate Administration');
+        handleServiceForm('probateForm', 'Probate');
         handleServiceForm('heirshipForm', 'Applications for Heirship');
-        handleServiceForm('powerAttorneyForm', 'Powers of Attorney');
-        handleServiceForm('guardianshipForm', 'Guardianship Applications');
+        handleServiceForm('powerAttorneyForm', 'Financial Powers of Attorney and Advance Directives');
+        handleServiceForm('guardianshipForm', 'Medical Powers of Attorney and Advance Directives');
         handleServiceForm('smallEstateForm', 'Small Estate Affidavits');
     }, 100);
 });

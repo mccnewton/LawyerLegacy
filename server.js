@@ -73,7 +73,7 @@ async function sendConsultationNotification(consultationData) {
         
         // Determine form type for subject line
         const formType = getFormTypeDescription(consultationData.legal_service || consultationData.serviceType);
-        const subjectLine = `New ${formType} Request - Sharon K. Lowry Law`;
+        const subjectLine = `New ${formType} Request - The Law Office of Sharon K. Lowry`;
         
         const mailOptions = {
             from: process.env.EMAIL_USER || 'noreply@sharonlowrylaw.com',
@@ -113,7 +113,7 @@ async function sendConsultationNotification(consultationData) {
                     
                     <hr style="border: none; border-top: 1px solid #dee2e6; margin: 30px 0;">
                     <p style="color: #6c757d; font-size: 12px; text-align: center;">
-                        This is an automated notification from Sharon K. Lowry Law website consultation system.
+                        This is an automated notification from The Law Office of Sharon K. Lowry website consultation system.
                     </p>
                 </div>
             `
@@ -140,10 +140,10 @@ function getFormTypeDescription(serviceType) {
     
     const formTypeMap = {
         'Wills & Estate Planning': 'Wills & Estate Planning',
-        'Probate Administration': 'Probate Administration', 
+        'Probate Administration': 'Probate', 
         'Applications for Heirship': 'Heirship Application',
-        'Powers of Attorney': 'Powers of Attorney',
-        'Guardianship Applications': 'Guardianship Application',
+        'Powers of Attorney': 'Financial Powers of Attorney and Advance Directives',
+        'Medical Powers of Attorney and Advance Directives': 'Medical Powers of Attorney and Advance Directives',
         'Small Estate Affidavits': 'Small Estate Affidavit',
         'General Consultation': 'General Contact',
         'Estate Planning': 'Wills & Estate Planning',
