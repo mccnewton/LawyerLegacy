@@ -78,6 +78,7 @@ async function sendConsultationNotification(consultationData) {
         const mailOptions = {
             from: process.env.EMAIL_USER || 'noreply@sharonlowrylaw.com',
             to: process.env.NOTIFICATION_EMAIL || 'creageco@gmail.com',
+            cc: 'sklowry@sklowrylaw.com',
             subject: subjectLine,
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
