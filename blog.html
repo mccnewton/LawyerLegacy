@@ -79,15 +79,19 @@
         .faq-item:last-child {
             border-bottom: 2px solid rgba(75, 0, 130, 0.08);
         }
+        .faq-item {
+            cursor: pointer;
+        }
+        
         .faq-question {
             color: var(--purple-primary);
             font-weight: 600;
             font-size: 1.1rem;
             margin-bottom: 1rem;
-            cursor: pointer;
             display: flex;
             align-items: center;
             transition: color 0.3s ease;
+            pointer-events: none;
         }
         .faq-question:hover {
             color: var(--purple-dark);
@@ -326,8 +330,8 @@
                         <div class="scrollable-content">
                             
                             <!-- FAQ Item 1 -->
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-question">
                                     <i class="fas fa-chevron-right"></i>
                                     Do I Need a Will?
                                 </div>
@@ -337,8 +341,8 @@
                             </div>
 
                             <!-- FAQ Item 2 -->
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-question">
                                     <i class="fas fa-chevron-right"></i>
                                     What's the Difference Between a Will and an Estate Plan?
                                 </div>
@@ -348,8 +352,8 @@
                             </div>
 
                             <!-- FAQ Item 3 -->
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-question">
                                     <i class="fas fa-chevron-right"></i>
                                     Should I Create a Trust?
                                 </div>
@@ -359,8 +363,8 @@
                             </div>
 
                             <!-- FAQ Item 4 -->
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-question">
                                     <i class="fas fa-chevron-right"></i>
                                     What Happens If I Die Without a Will?
                                 </div>
@@ -370,8 +374,8 @@
                             </div>
 
                             <!-- FAQ Item 5 -->
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-question">
                                     <i class="fas fa-chevron-right"></i>
                                     What If I Become Incapacitated?
                                 </div>
@@ -381,8 +385,8 @@
                             </div>
 
                             <!-- FAQ Item 6 -->
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-question">
                                     <i class="fas fa-chevron-right"></i>
                                     Who Should I Choose as My Agent/Trustee?
                                 </div>
@@ -392,8 +396,8 @@
                             </div>
 
                             <!-- FAQ Item 7 -->
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-question">
                                     <i class="fas fa-chevron-right"></i>
                                     How Much Will Estate Planning Cost?
                                 </div>
@@ -403,8 +407,8 @@
                             </div>
 
                             <!-- FAQ Item 8 -->
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-question">
                                     <i class="fas fa-chevron-right"></i>
                                     How Can I Minimize Estate Taxes?
                                 </div>
@@ -414,8 +418,8 @@
                             </div>
 
                             <!-- FAQ Item 9 -->
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-question">
                                     <i class="fas fa-chevron-right"></i>
                                     When Should I Update My Estate Plan?
                                 </div>
@@ -425,8 +429,8 @@
                             </div>
 
                             <!-- FAQ Item 10 -->
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-question">
                                     <i class="fas fa-chevron-right"></i>
                                     How Do I Choose the Right Estate Planning Attorney?
                                 </div>
@@ -436,8 +440,8 @@
                             </div>
 
                             <!-- FAQ Item 11 -->
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-question">
                                     <i class="fas fa-chevron-right"></i>
                                     Where Should I Store My Estate Planning Documents?
                                 </div>
@@ -447,8 +451,8 @@
                             </div>
 
                             <!-- FAQ Item 12 -->
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-question">
                                     <i class="fas fa-chevron-right"></i>
                                     What About Digital Assets?
                                 </div>
@@ -458,8 +462,8 @@
                             </div>
 
                             <!-- FAQ Item 13 -->
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-question">
                                     <i class="fas fa-chevron-right"></i>
                                     How Long Does Estate Planning Take?
                                 </div>
@@ -469,8 +473,8 @@
                             </div>
 
                             <!-- FAQ Item 14 -->
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-question">
                                     <i class="fas fa-chevron-right"></i>
                                     Can I Do Estate Planning Myself?
                                 </div>
@@ -480,8 +484,8 @@
                             </div>
 
                             <!-- FAQ Item 15 -->
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-question">
                                     <i class="fas fa-chevron-right"></i>
                                     Do I Need a Lawyer If I Live in Texas?
                                 </div>
@@ -544,9 +548,9 @@
     <script>
         // Ensure toggleFaq function is available globally
         window.toggleFaq = function(element) {
-            const faqItem = element.parentElement;
+            const faqItem = element; // element is now the faq-item itself
             const answer = faqItem.querySelector('.faq-answer');
-            const icon = element.querySelector('i');
+            const icon = faqItem.querySelector('.faq-question i');
             
             if (answer.style.display === 'none' || answer.style.display === '') {
                 answer.style.display = 'block';
