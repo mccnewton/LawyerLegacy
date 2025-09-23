@@ -1340,17 +1340,6 @@ body {
     transform: rotate(180deg);
 }
 
-/* Admin login styles */
-.admin-access-section {
-    max-width: 300px;
-    margin: 0 auto;
-}
-
-.admin-login-form {
-    background: var(--light-gray);
-    padding: 1.5rem;
-    border-radius: 8px;
-}
 
 /* Fix button alignment issues */
 .btn {

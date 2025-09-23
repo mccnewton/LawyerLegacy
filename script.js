@@ -475,57 +475,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-// Admin login functionality
-async function adminLogin() {
-    const email = document.getElementById('admin-email').value;
-    const password = document.getElementById('admin-password').value;
-    const messageDiv = document.getElementById('admin-login-message');
-    
-    if (!email || !password) {
-        showAdminMessage('Please enter both email and password', 'error');
-        return;
-    }
-    
-    try {
-        const response = await fetch('/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                username: email,
-                password: password
-            })
-        });
-        
-        const result = await response.json();
-        
-        if (response.ok) {
-            showAdminMessage('Login successful! Redirecting to admin dashboard...', 'success');
-            setTimeout(() => {
-                window.location.href = '/admin.html';
-            }, 1500);
-        } else {
-            showAdminMessage(result.error || 'Login failed', 'error');
-        }
-    } catch (error) {
-        console.error('Login error:', error);
-        showAdminMessage('Connection error. Please try again.', 'error');
-    }
-}
-
-function showAdminMessage(message, type) {
-    const messageDiv = document.getElementById('admin-login-message');
-    messageDiv.style.display = 'block';
-    messageDiv.className = `mt-2 text-center small ${type === 'success' ? 'text-success' : 'text-danger'}`;
-    messageDiv.textContent = message;
-    
-    if (type === 'error') {
-        setTimeout(() => {
-            messageDiv.style.display = 'none';
-        }, 5000);
-    }
-}
 
 
 
@@ -757,7 +706,6 @@ if (typeof module !== 'undefined' && module.exports) {
         toggleBlogPost,
         toggleFaq,
         showSection,
-        adminLogin,
         handleServiceForm,
         showToast,
         initFormConditionalFields
