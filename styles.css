@@ -148,6 +148,20 @@ body {
     box-shadow: 0 8px 20px var(--shadow);
 }
 
+/* Override Bootstrap btn-light to use purple text */
+.btn-light.pulse-btn {
+    background: white !important;
+    color: var(--purple-primary) !important;
+    border: 2px solid white !important;
+    font-weight: 600 !important;
+}
+
+.btn-light.pulse-btn:hover {
+    background: var(--purple-primary) !important;
+    color: white !important;
+    border-color: var(--purple-primary) !important;
+}
+
 /* Services Section */
 .services-section {
     padding: 80px 0;
