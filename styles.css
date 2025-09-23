@@ -996,6 +996,21 @@ body {
     }
 }
 
+/* Transparent white button styling */
+.btn-transparent-white {
+    background: transparent !important;
+    color: white !important;
+    border: 2px solid white !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-transparent-white:hover {
+    background: white !important;
+    color: var(--purple-primary) !important;
+    border-color: white !important;
+    transform: none !important;
+}
+
 /* ============================================
    RESOURCE CARD STYLES
    ============================================ */
