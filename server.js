@@ -145,14 +145,12 @@ function getFormTypeDescription(serviceType) {
         'Applications for Heirship': 'Heirship Application',
         'Powers of Attorney': 'Financial Powers of Attorney',
         'Medical Powers of Attorney and Advance Directives': 'Medical Powers of Attorney and Advance Directives',
-        'Small Estate Affidavits': 'Small Estate Affidavit',
         'General Consultation': 'General Contact',
         'Estate Planning': 'Wills & Estate Planning',
         'Probate': 'Probate Administration',
         'Heirship': 'Heirship Application',
         'Power of Attorney': 'Powers of Attorney',
-        'Guardianship': 'Guardianship Application',
-        'Small Estate': 'Small Estate Affidavit'
+        'Guardianship': 'Guardianship Application'
     };
     
     return formTypeMap[serviceType] || 'General Contact';

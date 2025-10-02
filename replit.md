@@ -24,11 +24,11 @@ The website is built as a static, multi-page frontend application emphasizing re
 
 ### Key Features and Design Decisions
 - **Comprehensive Estate Planning Form**: Includes 25 fields organized into 6 logical sections with conditional visibility, single-line layout for cleaner appearance, and open text field for additional details/questions.
-- **Complete Footer Navigation**: All dedicated service pages feature "Other Practice Areas" sections listing the 5 alternative services with direct links, excluding only the current page service.
+- **Complete Footer Navigation**: All dedicated service pages feature "Other Practice Areas" sections listing the 4 alternative services with direct links, excluding only the current page service.
 - **Enhanced Testimonials Section**: Features 6 authentic client testimonials from various platforms.
-- **Streamlined Contact Page**: Incorporates a "Get Started with Sharon" section with 6 attractive service buttons linking to dedicated practice area forms.
+- **Streamlined Contact Page**: Incorporates a "Get Started with Sharon" section with 5 attractive service buttons linking to dedicated practice area forms.
 - **Direct Service Navigation**: Home page service cards and contact page buttons link directly to individual service form pages, bypassing intermediate navigation.
-- **Dedicated Service Pages**: Six dedicated pages for services (Wills & Estates, Probate, Applications for Heirship, Financial Powers of Attorney, Medical Powers of Attorney and Advance Directives, Small Estate Affidavits), each with detailed information and specific consultation forms.
+- **Dedicated Service Pages**: Five dedicated pages for services (Wills & Estates, Probate, Applications for Heirship, Financial Powers of Attorney, Medical Powers of Attorney and Advance Directives), each with detailed information and specific consultation forms.
 - **Blog/Resources Enhancement**: Individual blog post pages with full content, professional layouts, and a card-based navigation system on the Resources page.
 - **Navigation Update**: Renamed "Legal Services" to "Practice Areas" and "Blog & FAQ" to "Resources", with a consistent updated navigation order.
 - **Enhanced Email System**: Automated email notifications with form-specific identification in subject lines and improved formatting for readability.
